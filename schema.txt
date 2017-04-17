@@ -1,0 +1,58 @@
+[Some desc text]
+enum SomeEnum
+{
+    val1;
+    [important tag]
+    val2;
+}
+
+record RecordEmpty
+{
+}
+
+record RecordSimple
+{
+    bool bool_val;
+    string str_val;
+    [cool number]
+    number int_val;
+    ?number opt_int;
+    int json_number;
+    json row_json;
+}
+
+[Some desc text]
+record RecordComplex
+{
+    RecordSimple simple;
+    list<string> keys;
+    list<SomeEnum> enums;
+    SomeEnum some_enum;
+    Date custom_type;
+}
+
+service getLog
+{
+    method GET;
+    url /api/log;
+    query string some_q;
+    response 200 RecordSimple;
+    response 500 SomeEnum;
+}
+
+[Some big
+Desc text]
+service postLog 
+{
+    method POST;
+    url /api/log/{id}/hello;
+    [very cool param]
+    param number id;
+    [it is query]
+    query number bytes;
+    query string text;
+    body RecordSimple;
+    [Good response]
+    response 200 RecordSimple;
+    response 500 SomeEnum;
+}
