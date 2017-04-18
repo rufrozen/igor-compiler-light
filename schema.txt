@@ -47,7 +47,7 @@ service postLog
     method POST;
     url /api/log/{id}/hello;
     [very cool param]
-    param number id;
+    param int id;
     [it is query]
     query number bytes;
     query string text;

@@ -40,7 +40,7 @@ class MethodType(Keyword):
     grammar = Enum( K("POST"), K("GET"), K("PUT"), K("DELETE") )
 
 class SimpleType(Keyword):
-    grammar = Enum( K("number"), K("int"), K("string"), K("bool"), K("json") )
+    grammar = Enum( K("number"), K("int"), K("string"), K("bool"), K("json"), K("Date") )
     def build(self):
         return {
             'tag': self.name,
@@ -165,7 +165,7 @@ class Service(List):
             'body': body.type.build() if body else None,
             'query': self.filter_build(ServiceQuery),
             'params': self.filter_build(ServiceParam),
-            'response': self.filter_build(ServiceResponse),
+            'responses': self.filter_build(ServiceResponse),
         }
 
 class Definition():
