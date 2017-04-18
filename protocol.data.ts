@@ -1,4 +1,14 @@
 
+function arrayFromJson<T>(json: any, fromJson: (json: Object) => T)
+{
+    return (<Array<Object>>json).map(fromJson);
+}
+
+function jsonHasValue(json: Object, key: string)
+{
+    return key in json && json[key] != null;
+}
+
 export const enum SomeEnum
 {
     Null,
@@ -49,7 +59,7 @@ export class RecordSimple
 {
     boolVal: boolean; // 
     strVal: string; // 
-    intVal: number; // cool number
+    intVal: number; //  cool number
     optInt: number | null; // 
     jsonNumber: number; // 
     rowJson: any; // 
@@ -57,12 +67,12 @@ export class RecordSimple
     static fromJson(json: Object): RecordSimple
     {
         let obj = new RecordSimple();
-        obj.boolVal = json['bool_val'];
-        obj.strVal = json['str_val'];
-        obj.intVal = json['int_val'];
-        obj.optInt = jsonHasValue(json, 'opt_int') ? json['opt_int'] : null;
-        obj.jsonNumber = json['json_number'];
-        obj.rowJson = json['row_json'];
+        obj.boolVal = <boolean>json['bool_val'];
+        obj.strVal = <string>json['str_val'];
+        obj.intVal = <number>json['int_val'];
+        obj.optInt = jsonHasValue(json, 'opt_int') ? <number>json['opt_int'] : null;
+        obj.jsonNumber = <number>json['json_number'];
+        obj.rowJson = <any>json['row_json'];
         return obj;
     }
 
@@ -93,7 +103,7 @@ export class RecordComplex
     {
         let obj = new RecordComplex();
         obj.simple = RecordSimple.fromJson(json['simple']);
-        obj.keys = arrayFromJson(json['keys'], el => el);
+        obj.keys = arrayFromJson(json['keys'], el => <string>el);
         obj.enums = arrayFromJson(json['enums'], el => SomeEnumFromString(el));
         obj.someEnum = SomeEnumFromString(json['some_enum']);
         obj.customType = new Date(json['custom_type'] * 1000);
@@ -108,7 +118,7 @@ export class RecordComplex
             'keys': this.keys.map(el => el),
             'enums': this.enums.map(el => SomeEnumToString(el)),
             'some_enum': SomeEnumToString(this.someEnum),
-            'custom_type': None,
+            'custom_type': Math.ceil(this.customType.getTime() / 1000),
         }
         return obj;
     }

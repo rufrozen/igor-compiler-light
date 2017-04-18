@@ -1,8 +1,8 @@
-[Some desc text]
+# Some desc text
 enum SomeEnum
 {
     val1;
-    [important tag]
+    # important tag
     val2;
 }
 
@@ -14,14 +14,14 @@ record RecordSimple
 {
     bool bool_val;
     string str_val;
-    [cool number]
+    # cool number
     number int_val;
     ?number opt_int;
     int json_number;
     json row_json;
 }
 
-[Some desc text]
+# Some desc text
 record RecordComplex
 {
     RecordSimple simple;
@@ -40,19 +40,18 @@ service getLog
     response 500 SomeEnum;
 }
 
-[Some big
-Desc text]
+# Some big Desc text
 service postLog 
 {
     method POST;
     url /api/log/{id}/hello;
-    [very cool param]
+    # very cool param
     param int id;
-    [it is query]
+    # it is query
     query number bytes;
     query string text;
     body RecordSimple;
-    [Good response]
+    # Good response
     response 200 RecordSimple;
     response 500 SomeEnum;
 }

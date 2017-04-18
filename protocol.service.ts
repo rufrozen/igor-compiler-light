@@ -27,11 +27,10 @@ export abstract class ProtocolService
             .map(response => Protocol.RecordSimple.fromJson(response.json()));
     }
 
-    // Some big
-    // Desc text
+    //  Some big Desc text
     postLog(id: number, bytes: number, text: string, body: Protocol.RecordSimple): Observable<Protocol.RecordSimple>
     {
-        return this.post('/api/log/' + id.toString() + '/hello', {'bytes': bytes, 'text': text}, body)
+        return this.post('/api/log/' + id.toString() + '/hello', {'bytes': bytes, 'text': text}, body.toJson())
             .catch(response =>
             {
                 switch(response.status)

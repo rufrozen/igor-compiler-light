@@ -56,6 +56,10 @@ class Type:
     
     @property
     def is_record(self): return self.is_ref and self.ref in global_records
+    
+    @property
+    def is_simple(self):
+        return self.tag in ['number', 'int', 'string', 'bool', 'json', 'Date']
        
     @property
     def tag(self): return self.schema['tag']
@@ -78,21 +82,25 @@ class Type:
         elif self.tag == 'int': return 'number'
         elif self.tag == 'bool': return 'boolean'
         elif self.tag == 'Date': return 'Date'
-        else: return self.tag
+        elif self.is_simple: return self.tag
+        else: raise Exception('unknown type ' + self.tag)
 
     def from_json(self, json):
         if self.is_record: return "{s.fullref}.fromJson({json})".format(s=self, json=json)
         elif self.is_enum: return "{s.fullref}FromString({json})".format(s=self, json=json)
         elif self.is_list: return "arrayFromJson({json}, el => {item})".format(json=json, item=self.item_type.from_json('el'))
         elif self.tag == 'Date': return "new Date({json} * 1000)".format(json=json)
-        return json
+        elif self.is_simple: return "<{s.declaration}>{json}".format(s=self, json=json)
+        else: raise Exception('unknown type ' + self.tag)
+
     
     def to_json(self, var):
         if self.is_record: return "{var}.toJson()".format(var=var)
         elif self.is_enum: return "{s.fullref}ToString({var})".format(s=self, var=var)
         elif self.is_list: return "{var}.map(el => {item})".format(var=var, item=self.item_type.to_json('el'))
-        elif self.tag == 'Date': "Math.ceil({var}.getTime() / 1000)".format(var=var)
-        else: return var
+        elif self.tag == 'Date': return "Math.ceil({var}.getTime() / 1000)".format(var=var)
+        elif self.is_simple: return var
+        else: raise Exception('unknown type ' + self.tag)
 
 class Enum:
     def __init__(self, schema):
@@ -250,7 +258,7 @@ export class {s.name}
 
 def url_text(url):
     if url['tag'] == 'url': return wrap(url['url'])
-    else: return url['param'] + ".toString()"
+    else: return inflection.camelize(url['param'], False) + ".toString()"
 
 def query_text(q):
     name = q['name']
@@ -265,6 +273,9 @@ class Service:
 
     @property
     def name(self): return inflection.camelize(self.schema['name'], False)
+    
+    @property
+    def has_body(self): return self.schema['body'] != None
     
     @property
     def desc(self):
@@ -289,7 +300,7 @@ class Service:
         for p in (self.schema['params'] + self.schema['query']):
             vartype = Type(p['type'])
             args.append(inflection.camelize(p['name'], False) + ': ' + vartype.declaration)
-        if self.schema['body'] != None:
+        if self.has_body:
             vartype = Type(self.schema['body'])
             args.append('body: ' + vartype.declaration)
         return ', '.join(args)
@@ -298,7 +309,11 @@ class Service:
     def call_args(self):
         args = [self.url, self.query]
         if self.method != 'get':
-            args.append('body')
+            if self.has_body:
+                vartype = Type(self.schema['body'])
+                args.append(vartype.to_json('body'))
+            else:
+                args.append('{}')
         return ', '.join(args)
 
     def find_response_200(self):
@@ -346,14 +361,18 @@ class Service:
     }}
 '''.format(s=self)
 
+def print_declarations(name, data):
+    print(name + ': \n  ' + '\n  '.join([a.name for a in data]))
+
 class Generator:
     def __init__(self, schema):
         self.schema = schema
         self.services = [Service(a) for a in schema if a['tag'] == 'service']
         self.records = [Record(a) for a in schema if a['tag'] == 'record']
         self.enums = [Enum(a) for a in schema if a['tag'] == 'enum']
-        print(global_records.keys())
-        print(global_enums.keys())
+        print_declarations('Enums', self.enums)
+        print_declarations('Records', self.records)
+        print_declarations('Services', self.services)
 
     def requests(self):
         return ''.join([a.generate() for a in self.services])
@@ -361,7 +380,7 @@ class Generator:
     def generate_data(self):
         global global_prefix
         global_prefix = ''
-        return ''.join([a.generate() for a in self.enums]) + ''.join([a.generate() for a in self.records])
+        return header + ''.join([a.generate() for a in self.enums]) + ''.join([a.generate() for a in self.records])
 
     def generate_service(self):
         global global_prefix

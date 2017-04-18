@@ -1,4 +1,4 @@
-import json
+import json, traceback
 from pypeg2 import *
 
 # pip install pypeg2
@@ -27,11 +27,14 @@ class Urlparam():
             'param': self.name,
         }
 
-class Description():
+class DescriptionOld():
     grammar = attr("name", re.compile(r"(?m)\[.*?\]", flags=re.S))
-
+    
+class Description():
+    grammar = attr("name", re.compile(r"\#.*"))
+    
 selfdesc = attr("desc", optional(Description))
-def getdesc(desc): return desc.name[1:-1] if desc else ""
+def getdesc(desc): return desc.name[1:] if desc else ""
 
 class DefaultValue(int):
     grammar = "=", Number
@@ -185,8 +188,14 @@ def read_file(file):
 def write_file(file, text):
     with open(file, "w", encoding="utf-8") as f:
         f.write(text)
-    
-schema = read_file("schema.txt")
-res = parse(schema, File).build()
-print (res)
-write_file("schema.json", json.dumps(res, indent=4, separators=(',', ': ')))
+
+try:
+    schema = read_file("schema.txt")
+    res = parse(schema, File).build()
+    write_file("schema.json", json.dumps(res, indent=4, separators=(',', ': ')))
+    print("DONE")
+except SyntaxError as err:
+    print('line: ' + str(err.lineno))
+    print('position: ' + str(err.offset))
+    print('text: ' + str(err.text))
+    print('error: ' + str(err.msg))
