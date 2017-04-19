@@ -2,11 +2,6 @@ import json, inflection, io, os
 
 # pip install inflection
 
-source_path = r'schema.json'
-target_dir = r'.'
-target_data_path = 'protocol.data.ts'
-target_service_path = 'protocol.service.ts'
-
 header = '''
 function arrayFromJson<T>(json: any, fromJson: (json: Object) => T)
 {
@@ -364,7 +359,7 @@ class Service:
 def print_declarations(name, data):
     print(name + ': \n  ' + '\n  '.join([a.name for a in data]))
 
-class Generator:
+class IgorGeneratorTs:
     def __init__(self, schema):
         self.schema = schema
         self.services = [Service(a) for a in schema if a['tag'] == 'service']
@@ -401,11 +396,3 @@ export abstract class ProtocolService
 %requests%
 }
 '''.replace('%requests%', self.requests())
-
-def generate():
-    source = load(source_path)
-    generator = Generator(source)
-    save(os.path.join(target_dir, target_data_path), generator.generate_data())
-    save(os.path.join(target_dir, target_service_path), generator.generate_service())
-
-generate()

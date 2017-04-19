@@ -1,5 +1,6 @@
 import json, traceback
 from pypeg2 import *
+from .utils import *
 
 # pip install pypeg2
 
@@ -181,21 +182,26 @@ class File(List):
     def build(self):
         return [a.build() for a in self]
 
-def read_file(file):
-    with open(file, "r", encoding="utf-8") as f:
-        return f.read()
+class IgorParser:
+    def __init__(self):
+        self.error = None
+        self.data = None
     
-def write_file(file, text):
-    with open(file, "w", encoding="utf-8") as f:
-        f.write(text)
+    def parse(self, filename):
+        try:
+            text = read_file(filename)
+            self.data = parse(text, File).build()
+            return True
+        except SyntaxError as err:
+            self.error = err
+            return False
 
-try:
-    schema = read_file("schema.txt")
-    res = parse(schema, File).build()
-    write_file("schema.json", json.dumps(res, indent=4, separators=(',', ': ')))
-    print("DONE")
-except SyntaxError as err:
-    print('line: ' + str(err.lineno))
-    print('position: ' + str(err.offset))
-    print('text: ' + str(err.text))
-    print('error: ' + str(err.msg))
+    def save(self, path, compact=False):
+        write_file(path, json2str(self.data, compact))
+    
+    def print_error(self):
+        print('line: ' + str(err.lineno))
+        print('position: ' + str(err.offset))
+        print('text: ' + str(err.text))
+        print('error: ' + str(err.msg))
+        
