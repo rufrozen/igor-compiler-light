@@ -31,11 +31,12 @@ function jsonHasValue(json: Object, key: string)
     return key in json && json[key] != null;
 }
 
+//  Some desc text
 export const enum SomeEnum
 {
     Null,
-    Val1,
-    Val2
+    Val1, // 
+    Val2, //  important tag
 }
 export function SomeEnumToString(val: SomeEnum)
 {
@@ -56,12 +57,13 @@ export function SomeEnumFromString(json: string)
     }
 }
 
+// 
 export const enum GlobalEnum
 {
     Null,
-    Global1,
-    Global2,
-    Global3
+    Global1, // 
+    Global2, //  is it global_2
+    Global3, //  is it global_3
 }
 export function GlobalEnumToString(val: GlobalEnum)
 {
@@ -84,11 +86,12 @@ export function GlobalEnumFromString(json: string)
     }
 }
 
+// 
 export const enum BigInnerRecordStatusEnum
 {
     Null,
-    Data1,
-    Data2
+    Data1, // 
+    Data2, // 
 }
 export function BigInnerRecordStatusEnumToString(val: BigInnerRecordStatusEnum)
 {
@@ -109,12 +112,13 @@ export function BigInnerRecordStatusEnumFromString(json: string)
     }
 }
 
+//  is it custom
 export const enum BigInnerRecordCustomEnum
 {
     Null,
-    MyVal1,
-    Global3,
-    MyVal3
+    MyVal1, //  is it my_val_1
+    Global3, //  is it global_3
+    MyVal3, // 
 }
 export function BigInnerRecordCustomEnumToString(val: BigInnerRecordCustomEnum)
 {
@@ -137,18 +141,21 @@ export function BigInnerRecordCustomEnumFromString(json: string)
     }
 }
 
+// 
 export const enum DeleteSecondRequestBodyItemEnum
 {
     Null,
-    Type1,
-    Type2
+    Type1, // 
+    Type2, // 
+    Global1, // 
 }
 export function DeleteSecondRequestBodyItemEnumToString(val: DeleteSecondRequestBodyItemEnum)
 {
     let arr = [
         null,
         'type1',
-        'type2'
+        'type2',
+        'global_1'
     ];
     return arr[val]
 }
@@ -158,6 +165,7 @@ export function DeleteSecondRequestBodyItemEnumFromString(json: string)
     {
         case 'type1': return DeleteSecondRequestBodyItemEnum.Type1;
         case 'type2': return DeleteSecondRequestBodyItemEnum.Type2;
+        case 'global_1': return DeleteSecondRequestBodyItemEnum.Global1;
         default: return DeleteSecondRequestBodyItemEnum.Null;
     }
 }
@@ -286,7 +294,7 @@ export class BigInnerRecord
 {
     result: boolean; // 
     status: BigInnerRecordStatusEnum; // 
-    custom: BigInnerRecordCustomEnum; // 
+    custom: BigInnerRecordCustomEnum; //  is it custom
     
     static fromJson(json: Object): BigInnerRecord
     {

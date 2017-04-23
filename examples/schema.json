@@ -245,17 +245,17 @@
         "description": "",
         "items": [
             {
-                "description": "",
+                "description": " is it global_1",
                 "name": "global_1",
                 "ref": null
             },
             {
-                "description": "",
+                "description": " is it global_2",
                 "name": "global_2",
                 "ref": null
             },
             {
-                "description": "",
+                "description": " is it global_3",
                 "name": "global_3",
                 "ref": null
             }
@@ -338,10 +338,10 @@
         "tag": "enum"
     },
     {
-        "description": "",
+        "description": " is it custom",
         "items": [
             {
-                "description": "",
+                "description": " is it my_val_1",
                 "name": "my_val_1",
                 "ref": null
             },
@@ -380,7 +380,7 @@
                 }
             },
             {
-                "description": "",
+                "description": " is it custom",
                 "name": "custom",
                 "optional": false,
                 "type": {
@@ -404,6 +404,11 @@
                 "description": "",
                 "name": "type2",
                 "ref": null
+            },
+            {
+                "description": "",
+                "name": "global_4",
+                "ref": "GlobalEnum"
             }
         ],
         "name": "DeleteSecondRequestBodyItemEnum",

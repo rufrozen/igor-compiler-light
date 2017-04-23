@@ -50,7 +50,10 @@ class IgorCompiler:
             
         if self.args.typescript != None:
             print('generate typescript...')
-            self.gen_ts()
+            try:
+                self.gen_ts()
+            except GenerationError as e:
+                print(e)
             
     def gen_ts(self):
         target_dir = self.args.typescript

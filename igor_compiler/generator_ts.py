@@ -1,4 +1,5 @@
 import json, inflection, io, os
+from .utils import *
 
 # pip install inflection
 
@@ -114,7 +115,7 @@ class Type:
         elif self.tag == 'bool': return 'boolean'
         elif self.tag == 'Date': return 'Date'
         elif self.is_simple: return self.tag
-        else: raise Exception('unknown type ' + self.tag)
+        else: raise GenerationError('unknown type ' + self.tag)
 
     def from_json(self, json):
         if self.is_record: return "{s.fullref}.fromJson({json})".format(s=self, json=json)
@@ -127,7 +128,7 @@ class Type:
             return "dictFromJson({json}, {el} => {item})".format(json=json, el=el, item=self.value_type.from_json(el))
         elif self.tag == 'Date': return "new Date({json} * 1000)".format(json=json)
         elif self.is_simple: return "<{s.declaration}>{json}".format(s=self, json=json)
-        else: raise Exception('unknown type ' + self.tag)
+        else: raise GenerationError('unknown type ' + self.tag)
 
     
     def to_json(self, var):
@@ -141,7 +142,16 @@ class Type:
             return "dictToJson({var}, {el} => {item})".format(var=var, el=el, item=self.value_type.to_json(el))
         elif self.tag == 'Date': return "Math.ceil({var}.getTime() / 1000)".format(var=var)
         elif self.is_simple: return var
-        else: raise Exception('unknown type ' + self.tag)
+        else: raise GenerationError('unknown type ' + self.tag)
+
+def enum_item_desc(data):
+    ref = data['ref']
+    if ref != None:
+        return global_enums[ref].item_desc(data['name'])
+    return data['description']
+
+def enum_item(data):
+    return spaces(1) + inflection.camelize(data['name']) + ', // ' + enum_item_desc(data)
 
 class Enum:
     def __init__(self, schema):
@@ -152,27 +162,40 @@ class Enum:
     def name(self): return self.schema['name']
     
     @property
-    def items(self): return [a['name'] for a in self.schema['items']]
+    def desc(self): return self.schema['description']
     
     @property
-    def value_names(self):
-        return ',\n'.join([spaces(1) + inflection.camelize(v) for v in self.items])
+    def items(self): return self.schema['items']
+    
+    @property
+    def items_name(self): return [a['name'] for a in self.items]
+    
+    def item_desc(self, item):
+        for a in self.items:
+            if a['name'] == item:
+                return enum_item_desc(a)
+        raise GenerationError("enum " + self.name + " doesn't have item " + item)
+    
+    @property
+    def delcaration(self):
+        return '\n'.join([enum_item(v) for v in self.items])
     
     @property
     def to_json(self):
-        return ',\n'.join([spaces(2) + wrap(v) for v in self.items])
+        return ',\n'.join([spaces(2) + wrap(v) for v in self.items_name])
     
     @property
     def from_json(self):
         frm = "case '{j}': return {n}.{v};"
-        return '\n'.join([spaces(2) + frm.format(v=inflection.camelize(v),j=v,n=self.name) for v in self.items])
+        return '\n'.join([spaces(2) + frm.format(v=inflection.camelize(v),j=v,n=self.name) for v in self.items_name])
     
     def generate(self):
         return '''
+// {s.desc}
 export const enum {s.name}
 {{
     Null,
-{s.value_names}
+{s.delcaration}
 }}
 export function {s.name}ToString(val: {s.name})
 {{
@@ -361,7 +384,7 @@ class Service:
         for v in self.schema['responses']:
             if v['status'] == 200:
                 return v
-        raise Exception('empty_200_reply')
+        raise GenerationError('empty_200_reply')
 
     def response_type(self):
         return Type(self.find_response_200()['type'])

@@ -1,8 +1,11 @@
 
 enum GlobalEnum
 {
+    # is it global_1
     global_1;
+    # is it global_2
     global_2;
+    # is it global_3
     global_3;
 }
 
@@ -22,9 +25,10 @@ record BigInnerRecord
         data1;
         data2;
     }
-    
+    # is it custom
     enum custom
     {
+        # is it my_val_1
         my_val_1;
         GlobalEnum.global_3;
         my_val_3;
@@ -44,6 +48,7 @@ service deleteSecond
         {
             type1;
             type2;
+            GlobalEnum.global_4;
         }
     }
     response 200 record
