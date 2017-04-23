@@ -83,11 +83,12 @@ ListType.grammar = "list", "<", attr("item_type", Type), ">"
 DictType.grammar = "dict", "<", "string", ",", attr("value_type", Type), ">"
 
 class EnumItem():
-    grammar = selfdesc, selfname, ";"
+    grammar = selfdesc, optional(attr("ref", Varname), "."), selfname, ";"
     def build(self, context):
         return {
             'description': getdesc(self.desc),
-            'name': self.name
+            'name': self.name,
+            'ref': self.ref if hasattr(self, 'ref') else None
         }
 
 class EnumBody(List):

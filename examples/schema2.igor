@@ -1,4 +1,11 @@
 
+enum GlobalEnum
+{
+    global_1;
+    global_2;
+    global_3;
+}
+
 record RecordSecond
 {
     RecordComplex obj;
@@ -14,6 +21,13 @@ record BigInnerRecord
     {
         data1;
         data2;
+    }
+    
+    enum custom
+    {
+        my_val_1;
+        GlobalEnum.global_3;
+        my_val_3;
     }
 }
 

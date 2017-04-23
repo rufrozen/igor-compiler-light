@@ -5,6 +5,7 @@ from .utils import *
 
 class IgorCompiler:
     def __init__(self):
+        self.version = "0.1.0"
         self.data = []
         self.args = None
     
@@ -17,13 +18,16 @@ class IgorCompiler:
         parser.add_argument('-t', '--typescript', help='genereate typescript folder')
         parser.add_argument('-s', '--schema', help='generate json schema file')
         parser.add_argument('-c', '--json-compact', action='store_true', help='compact schema json')
+        parser.add_argument('-v', '--version', action='store_true', help='compiler version')
         
         self.args = parser.parse_args()
+        if self.args.version:
+            print(self.version)
+            return False
         if self.args.igor == []:
             parser.print_help()
             return False
-        else:
-            return True
+        return True
 
     def save(self, path, compact=False):
         write_file(path, json2str(self.data, compact))

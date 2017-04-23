@@ -51,6 +51,34 @@ export function SomeEnumFromString(json: string)
     }
 }
 
+export const enum GlobalEnum
+{
+    Null,
+    Global1,
+    Global2,
+    Global3
+}
+export function GlobalEnumToString(val: GlobalEnum)
+{
+    let arr = [
+        null,
+        'global_1',
+        'global_2',
+        'global_3'
+    ];
+    return arr[val]
+}
+export function GlobalEnumFromString(json: string)
+{
+    switch(json)
+    {
+        case 'global_1': return GlobalEnum.Global1;
+        case 'global_2': return GlobalEnum.Global2;
+        case 'global_3': return GlobalEnum.Global3;
+        default: return GlobalEnum.Null;
+    }
+}
+
 export const enum BigInnerRecordStatusEnum
 {
     Null,
@@ -73,6 +101,34 @@ export function BigInnerRecordStatusEnumFromString(json: string)
         case 'data1': return BigInnerRecordStatusEnum.Data1;
         case 'data2': return BigInnerRecordStatusEnum.Data2;
         default: return BigInnerRecordStatusEnum.Null;
+    }
+}
+
+export const enum BigInnerRecordCustomEnum
+{
+    Null,
+    MyVal1,
+    Global3,
+    MyVal3
+}
+export function BigInnerRecordCustomEnumToString(val: BigInnerRecordCustomEnum)
+{
+    let arr = [
+        null,
+        'my_val_1',
+        'global_3',
+        'my_val_3'
+    ];
+    return arr[val]
+}
+export function BigInnerRecordCustomEnumFromString(json: string)
+{
+    switch(json)
+    {
+        case 'my_val_1': return BigInnerRecordCustomEnum.MyVal1;
+        case 'global_3': return BigInnerRecordCustomEnum.Global3;
+        case 'my_val_3': return BigInnerRecordCustomEnum.MyVal3;
+        default: return BigInnerRecordCustomEnum.Null;
     }
 }
 
@@ -225,12 +281,14 @@ export class BigInnerRecord
 {
     result: boolean; // 
     status: BigInnerRecordStatusEnum; // 
+    custom: BigInnerRecordCustomEnum; // 
     
     static fromJson(json: Object): BigInnerRecord
     {
         let obj = new BigInnerRecord();
         obj.result = <boolean>json['result'];
         obj.status = BigInnerRecordStatusEnumFromString(json['status']);
+        obj.custom = BigInnerRecordCustomEnumFromString(json['custom']);
         return obj;
     }
 
@@ -240,6 +298,7 @@ export class BigInnerRecord
         {
             'result': this.result,
             'status': BigInnerRecordStatusEnumToString(this.status),
+            'custom': BigInnerRecordCustomEnumToString(this.custom),
         }
         return obj;
     }

@@ -4,11 +4,13 @@
         "items": [
             {
                 "description": "",
-                "name": "val1"
+                "name": "val1",
+                "ref": null
             },
             {
                 "description": " important tag",
-                "name": "val2"
+                "name": "val2",
+                "ref": null
             }
         ],
         "name": "SomeEnum",
@@ -244,6 +246,28 @@
         "items": [
             {
                 "description": "",
+                "name": "global_1",
+                "ref": null
+            },
+            {
+                "description": "",
+                "name": "global_2",
+                "ref": null
+            },
+            {
+                "description": "",
+                "name": "global_3",
+                "ref": null
+            }
+        ],
+        "name": "GlobalEnum",
+        "tag": "enum"
+    },
+    {
+        "description": "",
+        "items": [
+            {
+                "description": "",
                 "name": "obj",
                 "optional": false,
                 "type": {
@@ -301,14 +325,38 @@
         "items": [
             {
                 "description": "",
-                "name": "data1"
+                "name": "data1",
+                "ref": null
             },
             {
                 "description": "",
-                "name": "data2"
+                "name": "data2",
+                "ref": null
             }
         ],
         "name": "BigInnerRecordStatusEnum",
+        "tag": "enum"
+    },
+    {
+        "description": "",
+        "items": [
+            {
+                "description": "",
+                "name": "my_val_1",
+                "ref": null
+            },
+            {
+                "description": "",
+                "name": "global_3",
+                "ref": "GlobalEnum"
+            },
+            {
+                "description": "",
+                "name": "my_val_3",
+                "ref": null
+            }
+        ],
+        "name": "BigInnerRecordCustomEnum",
         "tag": "enum"
     },
     {
@@ -330,6 +378,15 @@
                     "ref": "BigInnerRecordStatusEnum",
                     "tag": "ref"
                 }
+            },
+            {
+                "description": "",
+                "name": "custom",
+                "optional": false,
+                "type": {
+                    "ref": "BigInnerRecordCustomEnum",
+                    "tag": "ref"
+                }
             }
         ],
         "name": "BigInnerRecord",
@@ -340,11 +397,13 @@
         "items": [
             {
                 "description": "",
-                "name": "type1"
+                "name": "type1",
+                "ref": null
             },
             {
                 "description": "",
-                "name": "type2"
+                "name": "type2",
+                "ref": null
             }
         ],
         "name": "DeleteSecondRequestBodyItemEnum",
