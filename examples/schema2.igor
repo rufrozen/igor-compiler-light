@@ -48,7 +48,7 @@ service deleteSecond
         {
             type1;
             type2;
-            GlobalEnum.global_4;
+            GlobalEnum.global_1;
         }
     }
     response 200 record

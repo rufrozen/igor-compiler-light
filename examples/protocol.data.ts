@@ -61,7 +61,7 @@ export function SomeEnumFromString(json: string)
 export const enum GlobalEnum
 {
     Null,
-    Global1, // 
+    Global1, //  is it global_1
     Global2, //  is it global_2
     Global3, //  is it global_3
 }
@@ -147,7 +147,7 @@ export const enum DeleteSecondRequestBodyItemEnum
     Null,
     Type1, // 
     Type2, // 
-    Global1, // 
+    Global1, //  is it global_1
 }
 export function DeleteSecondRequestBodyItemEnumToString(val: DeleteSecondRequestBodyItemEnum)
 {
