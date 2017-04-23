@@ -51,6 +51,56 @@ export function SomeEnumFromString(json: string)
     }
 }
 
+export const enum BigInnerRecord3
+{
+    Null,
+    Data1,
+    Data2
+}
+export function BigInnerRecord3ToString(val: BigInnerRecord3)
+{
+    let arr = [
+        null,
+        'data1',
+        'data2'
+    ];
+    return arr[val]
+}
+export function BigInnerRecord3FromString(json: string)
+{
+    switch(json)
+    {
+        case 'data1': return BigInnerRecord3.Data1;
+        case 'data2': return BigInnerRecord3.Data2;
+        default: return BigInnerRecord3.Null;
+    }
+}
+
+export const enum InlineRecordDeleteEnum
+{
+    Null,
+    Type1,
+    Type2
+}
+export function InlineRecordDeleteEnumToString(val: InlineRecordDeleteEnum)
+{
+    let arr = [
+        null,
+        'type1',
+        'type2'
+    ];
+    return arr[val]
+}
+export function InlineRecordDeleteEnumFromString(json: string)
+{
+    switch(json)
+    {
+        case 'type1': return InlineRecordDeleteEnum.Type1;
+        case 'type2': return InlineRecordDeleteEnum.Type2;
+        default: return InlineRecordDeleteEnum.Null;
+    }
+}
+
 export class RecordEmpty
 {
 
@@ -166,6 +216,102 @@ export class RecordSecond
             'complex_list': listToJson(this.complexList, el1 => listToJson(el1, el2 => el2.toJson())),
             'simple_dict': dictToJson(this.simpleDict, el1 => el1),
             'complex_dict': dictToJson(this.complexDict, el1 => listToJson(el1, el2 => el2.toJson())),
+        }
+        return obj;
+    }
+}
+
+export class BigInnerRecord2
+{
+    result: boolean; // 
+    dataEnum: BigInnerRecord3; // 
+    
+    static fromJson(json: Object): BigInnerRecord2
+    {
+        let obj = new BigInnerRecord2();
+        obj.result = <boolean>json['result'];
+        obj.dataEnum = BigInnerRecord3FromString(json['data_enum']);
+        return obj;
+    }
+
+    toJson(): Object
+    {
+        let obj: Object =
+        {
+            'result': this.result,
+            'data_enum': BigInnerRecord3ToString(this.dataEnum),
+        }
+        return obj;
+    }
+}
+
+export class BigInnerRecord1
+{
+    dataRecord: BigInnerRecord2; // 
+    value: number; // 
+    dataOutsideEnum: BigInnerRecord3; // 
+    
+    static fromJson(json: Object): BigInnerRecord1
+    {
+        let obj = new BigInnerRecord1();
+        obj.dataRecord = BigInnerRecord2.fromJson(json['data_record']);
+        obj.value = <number>json['value'];
+        obj.dataOutsideEnum = BigInnerRecord3FromString(json['data_outside_enum']);
+        return obj;
+    }
+
+    toJson(): Object
+    {
+        let obj: Object =
+        {
+            'data_record': this.dataRecord.toJson(),
+            'value': this.value,
+            'data_outside_enum': BigInnerRecord3ToString(this.dataOutsideEnum),
+        }
+        return obj;
+    }
+}
+
+export class InlineRecordDelete
+{
+    data: number; // 
+    dataEnum: InlineRecordDeleteEnum; // 
+    
+    static fromJson(json: Object): InlineRecordDelete
+    {
+        let obj = new InlineRecordDelete();
+        obj.data = <number>json['data'];
+        obj.dataEnum = InlineRecordDeleteEnumFromString(json['data_enum']);
+        return obj;
+    }
+
+    toJson(): Object
+    {
+        let obj: Object =
+        {
+            'data': this.data,
+            'data_enum': InlineRecordDeleteEnumToString(this.dataEnum),
+        }
+        return obj;
+    }
+}
+
+export class InlineRecordReply
+{
+    error: string; // 
+    
+    static fromJson(json: Object): InlineRecordReply
+    {
+        let obj = new InlineRecordReply();
+        obj.error = <string>json['error'];
+        return obj;
+    }
+
+    toJson(): Object
+    {
+        let obj: Object =
+        {
+            'error': this.error,
         }
         return obj;
     }

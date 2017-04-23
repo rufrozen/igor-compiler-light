@@ -297,7 +297,136 @@
         "tag": "record"
     },
     {
-        "body": null,
+        "description": "",
+        "items": [
+            {
+                "description": "",
+                "name": "data1"
+            },
+            {
+                "description": "",
+                "name": "data2"
+            }
+        ],
+        "name": "BigInnerRecord3",
+        "tag": "enum"
+    },
+    {
+        "description": "",
+        "items": [
+            {
+                "description": "",
+                "name": "result",
+                "optional": false,
+                "type": {
+                    "tag": "bool"
+                }
+            },
+            {
+                "description": "",
+                "name": "data_enum",
+                "optional": false,
+                "type": {
+                    "ref": "BigInnerRecord3",
+                    "tag": "ref"
+                }
+            }
+        ],
+        "name": "BigInnerRecord2",
+        "tag": "record"
+    },
+    {
+        "description": "",
+        "items": [
+            {
+                "description": "",
+                "name": "data_record",
+                "optional": false,
+                "type": {
+                    "ref": "BigInnerRecord2",
+                    "tag": "ref"
+                }
+            },
+            {
+                "description": "",
+                "name": "value",
+                "optional": false,
+                "type": {
+                    "tag": "int"
+                }
+            },
+            {
+                "description": "",
+                "name": "data_outside_enum",
+                "optional": false,
+                "type": {
+                    "ref": "BigInnerRecord3",
+                    "tag": "ref"
+                }
+            }
+        ],
+        "name": "BigInnerRecord1",
+        "tag": "record"
+    },
+    {
+        "description": "",
+        "items": [
+            {
+                "description": "",
+                "name": "type1"
+            },
+            {
+                "description": "",
+                "name": "type2"
+            }
+        ],
+        "name": "InlineRecordDeleteEnum",
+        "tag": "enum"
+    },
+    {
+        "description": "",
+        "items": [
+            {
+                "description": "",
+                "name": "data",
+                "optional": false,
+                "type": {
+                    "tag": "int"
+                }
+            },
+            {
+                "description": "",
+                "name": "data_enum",
+                "optional": false,
+                "type": {
+                    "ref": "InlineRecordDeleteEnum",
+                    "tag": "ref"
+                }
+            }
+        ],
+        "name": "InlineRecordDelete",
+        "tag": "record"
+    },
+    {
+        "description": "",
+        "items": [
+            {
+                "description": "",
+                "name": "error",
+                "optional": false,
+                "type": {
+                    "tag": "string"
+                }
+            }
+        ],
+        "name": "InlineRecordReply",
+        "tag": "record"
+    },
+    {
+        "body": {
+            "ref": "InlineRecordDelete",
+            "tag": "ref"
+        },
         "description": "",
         "method": "DELETE",
         "name": "deleteSecond",
@@ -316,7 +445,7 @@
                 "description": "",
                 "status": 200,
                 "type": {
-                    "ref": "RecordSecond",
+                    "ref": "InlineRecordReply",
                     "tag": "ref"
                 }
             },
@@ -324,7 +453,7 @@
                 "description": "",
                 "status": 500,
                 "type": {
-                    "ref": "RecordComplex",
+                    "ref": "RecordSecond",
                     "tag": "ref"
                 }
             }

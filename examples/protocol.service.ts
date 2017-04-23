@@ -43,18 +43,18 @@ export abstract class ProtocolService
     }
 
     // 
-    deleteSecond(someQ: string): Observable<Protocol.RecordSecond>
+    deleteSecond(someQ: string, body: Protocol.InlineRecordDelete): Observable<Protocol.InlineRecordReply>
     {
-        return this.delete('/api/log/delete', {'some_q': someQ}, {})
+        return this.delete('/api/log/delete', {'some_q': someQ}, body.toJson())
             .catch(response =>
             {
                 switch(response.status)
                 {
-                    case 500: return Observable.throw(Protocol.RecordComplex.fromJson(response.json()));
+                    case 500: return Observable.throw(Protocol.RecordSecond.fromJson(response.json()));
                     default: return Observable.throw(response);
                 }
             })
-            .map(response => Protocol.RecordSecond.fromJson(response.json()));
+            .map(response => Protocol.InlineRecordReply.fromJson(response.json()));
     }
 
 }
