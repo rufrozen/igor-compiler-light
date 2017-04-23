@@ -250,6 +250,47 @@
                     "ref": "RecordComplex",
                     "tag": "ref"
                 }
+            },
+            {
+                "description": "",
+                "name": "complex_list",
+                "optional": false,
+                "type": {
+                    "item_type": {
+                        "item_type": {
+                            "ref": "RecordComplex",
+                            "tag": "ref"
+                        },
+                        "tag": "list"
+                    },
+                    "tag": "list"
+                }
+            },
+            {
+                "description": "",
+                "name": "simple_dict",
+                "optional": false,
+                "type": {
+                    "tag": "dict",
+                    "value_type": {
+                        "tag": "int"
+                    }
+                }
+            },
+            {
+                "description": "",
+                "name": "complex_dict",
+                "optional": false,
+                "type": {
+                    "tag": "dict",
+                    "value_type": {
+                        "item_type": {
+                            "ref": "RecordComplex",
+                            "tag": "ref"
+                        },
+                        "tag": "list"
+                    }
+                }
             }
         ],
         "name": "RecordSecond",

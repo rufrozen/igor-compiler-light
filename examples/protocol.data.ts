@@ -1,12 +1,29 @@
 
-function arrayFromJson<T>(json: any, fromJson: (json: Object) => T)
+function listFromJson<T>(json: any, fromJson: (json: any) => T)
 {
     return (<Array<Object>>json).map(fromJson);
 }
 
-function jsonHasValue(json: Object, key: string)
+function listToJson<T>(data: T[], toJson: (data: T) => any)
 {
-    return key in json && json[key] != null;
+    return data.map(toJson);
+}
+
+function dictToJson<T>(data: {[key: string]: T}, toJson: (data: T) => any)
+{
+    let res: Object = {};
+    for (let key in data)
+        res[key] = toJson(data[key]);
+    return res
+}
+
+function dictFromJson<T>(json: any, fromJson: (json: any) => T)
+{
+    let res: {[key: string]: T} = {};
+    let src = <Object>json;
+    for (let key in src)
+        res[key] = fromJson(src[key]);
+    return res
 }
 
 export const enum SomeEnum
@@ -103,8 +120,8 @@ export class RecordComplex
     {
         let obj = new RecordComplex();
         obj.simple = RecordSimple.fromJson(json['simple']);
-        obj.keys = arrayFromJson(json['keys'], el => <string>el);
-        obj.enums = arrayFromJson(json['enums'], el => SomeEnumFromString(el));
+        obj.keys = listFromJson(json['keys'], el1 => <string>el1);
+        obj.enums = listFromJson(json['enums'], el1 => SomeEnumFromString(el1));
         obj.someEnum = SomeEnumFromString(json['some_enum']);
         obj.customType = new Date(json['custom_type'] * 1000);
         return obj;
@@ -115,8 +132,8 @@ export class RecordComplex
         let obj: Object =
         {
             'simple': this.simple.toJson(),
-            'keys': this.keys.map(el => el),
-            'enums': this.enums.map(el => SomeEnumToString(el)),
+            'keys': listToJson(this.keys, el1 => el1),
+            'enums': listToJson(this.enums, el1 => SomeEnumToString(el1)),
             'some_enum': SomeEnumToString(this.someEnum),
             'custom_type': Math.ceil(this.customType.getTime() / 1000),
         }
@@ -127,11 +144,17 @@ export class RecordComplex
 export class RecordSecond
 {
     obj: RecordComplex; // 
+    complexList: Array<Array<RecordComplex>>; // 
+    simpleDict: {[key: string]: number}; // 
+    complexDict: {[key: string]: Array<RecordComplex>}; // 
     
     static fromJson(json: Object): RecordSecond
     {
         let obj = new RecordSecond();
         obj.obj = RecordComplex.fromJson(json['obj']);
+        obj.complexList = listFromJson(json['complex_list'], el1 => listFromJson(el1, el2 => RecordComplex.fromJson(el2)));
+        obj.simpleDict = dictFromJson(json['simple_dict'], el1 => <number>el1);
+        obj.complexDict = dictFromJson(json['complex_dict'], el1 => listFromJson(el1, el2 => RecordComplex.fromJson(el2)));
         return obj;
     }
 
@@ -140,6 +163,9 @@ export class RecordSecond
         let obj: Object =
         {
             'obj': this.obj.toJson(),
+            'complex_list': listToJson(this.complexList, el1 => listToJson(el1, el2 => el2.toJson())),
+            'simple_dict': dictToJson(this.simpleDict, el1 => el1),
+            'complex_dict': dictToJson(this.complexDict, el1 => listToJson(el1, el2 => el2.toJson())),
         }
         return obj;
     }

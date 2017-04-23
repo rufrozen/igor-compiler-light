@@ -64,13 +64,21 @@ class ListType():
             'tag': 'list',
             'item_type': self.item_type.build(),
         }
-
+    
+class DictType():    
+    def build(self):
+        return {
+            'tag': 'dict',
+            'value_type': self.value_type.build(),
+        }
+    
 class Type():
-    grammar = attr("value", [SimpleType, ListType, VarType])
+    grammar = attr("value", [SimpleType, ListType, DictType, VarType])
     def build(self):
         return self.value.build()
 
 ListType.grammar = "list", "<", attr("item_type", Type), ">"
+DictType.grammar = "dict", "<", "string", ",", attr("value_type", Type), ">"
 
 class EnumItem():
     grammar = selfdesc, selfname, ";"

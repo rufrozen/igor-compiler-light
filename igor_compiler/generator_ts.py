@@ -3,14 +3,31 @@ import json, inflection, io, os
 # pip install inflection
 
 header = '''
-function arrayFromJson<T>(json: any, fromJson: (json: Object) => T)
+function listFromJson<T>(json: any, fromJson: (json: any) => T)
 {
     return (<Array<Object>>json).map(fromJson);
 }
 
-function jsonHasValue(json: Object, key: string)
+function listToJson<T>(data: T[], toJson: (data: T) => any)
 {
-    return key in json && json[key] != null;
+    return data.map(toJson);
+}
+
+function dictToJson<T>(data: {[key: string]: T}, toJson: (data: T) => any)
+{
+    let res: Object = {};
+    for (let key in data)
+        res[key] = toJson(data[key]);
+    return res
+}
+
+function dictFromJson<T>(json: any, fromJson: (json: any) => T)
+{
+    let res: {[key: string]: T} = {};
+    let src = <Object>json;
+    for (let key in src)
+        res[key] = fromJson(src[key]);
+    return res
 }
 '''
 
@@ -35,16 +52,21 @@ def save(path, text):
 global_prefix = ''
 global_enums = {}
 global_records = {}
-
+global_varname = 0
+    
 class Type:
-    def __init__(self, schema):
+    def __init__(self, schema, index = 1):
         self.schema = schema
+        self.index = index;
 
     @property
     def is_ref(self): return self.tag == 'ref'
     
     @property
     def is_list(self): return self.tag == 'list'
+    
+    @property
+    def is_dict(self): return self.tag == 'dict'
     
     @property
     def is_enum(self): return self.is_ref and self.ref in global_enums
@@ -67,12 +89,21 @@ class Type:
     
     @property
     def item_type(self):
-        return Type(self.schema['item_type'])
+        return Type(self.schema['item_type'], self.index + 1)
+    
+    @property
+    def value_type(self):
+        return Type(self.schema['value_type'], self.index + 1)
+    
+    @property
+    def param_name(self):
+        return 'el' + str(self.index)
     
     @property
     def declaration(self):
         if self.is_ref: return self.fullref
         elif self.is_list: return 'Array<' + self.item_type.declaration + '>'
+        elif self.is_dict: return '{[key: string]: ' + self.value_type.declaration + '}'
         elif self.tag == 'json': return 'any'
         elif self.tag == 'int': return 'number'
         elif self.tag == 'bool': return 'boolean'
@@ -83,7 +114,12 @@ class Type:
     def from_json(self, json):
         if self.is_record: return "{s.fullref}.fromJson({json})".format(s=self, json=json)
         elif self.is_enum: return "{s.fullref}FromString({json})".format(s=self, json=json)
-        elif self.is_list: return "arrayFromJson({json}, el => {item})".format(json=json, item=self.item_type.from_json('el'))
+        elif self.is_list:
+            el = self.param_name
+            return "listFromJson({json}, {el} => {item})".format(json=json, el=el, item=self.item_type.from_json(el))
+        elif self.is_dict:
+            el = self.param_name
+            return "dictFromJson({json}, {el} => {item})".format(json=json, el=el, item=self.value_type.from_json(el))
         elif self.tag == 'Date': return "new Date({json} * 1000)".format(json=json)
         elif self.is_simple: return "<{s.declaration}>{json}".format(s=self, json=json)
         else: raise Exception('unknown type ' + self.tag)
@@ -92,7 +128,12 @@ class Type:
     def to_json(self, var):
         if self.is_record: return "{var}.toJson()".format(var=var)
         elif self.is_enum: return "{s.fullref}ToString({var})".format(s=self, var=var)
-        elif self.is_list: return "{var}.map(el => {item})".format(var=var, item=self.item_type.to_json('el'))
+        elif self.is_list:
+            el = self.param_name
+            return "listToJson({var}, {el} => {item})".format(var=var, el=el, item=self.item_type.to_json(el))
+        elif self.is_dict:
+            el = self.param_name
+            return "dictToJson({var}, {el} => {item})".format(var=var, el=el, item=self.value_type.to_json(el))
         elif self.tag == 'Date': return "Math.ceil({var}.getTime() / 1000)".format(var=var)
         elif self.is_simple: return var
         else: raise Exception('unknown type ' + self.tag)

@@ -2,6 +2,9 @@
 record RecordSecond
 {
     RecordComplex obj;
+    list<list<RecordComplex>> complex_list;
+    dict<string, int> simple_dict;
+    dict<string, list<RecordComplex>> complex_dict;
 }
 
 service deleteSecond

@@ -19,7 +19,7 @@ class IgorCompiler:
         parser.add_argument('-c', '--json-compact', action='store_true', help='compact schema json')
         
         self.args = parser.parse_args()
-        if self.args.igor == None:
+        if self.args.igor == []:
             parser.print_help()
             return False
         else:
