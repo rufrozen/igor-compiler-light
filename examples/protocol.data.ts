@@ -26,6 +26,11 @@ function dictFromJson<T>(json: any, fromJson: (json: any) => T)
     return res
 }
 
+function jsonHasValue(json: Object, key: string)
+{
+    return key in json && json[key] != null;
+}
+
 export const enum SomeEnum
 {
     Null,

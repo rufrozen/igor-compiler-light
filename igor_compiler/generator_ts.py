@@ -29,6 +29,11 @@ function dictFromJson<T>(json: any, fromJson: (json: any) => T)
         res[key] = fromJson(src[key]);
     return res
 }
+
+function jsonHasValue(json: Object, key: string)
+{
+    return key in json && json[key] != null;
+}
 '''
 
 def wrap(text, border="'"):
