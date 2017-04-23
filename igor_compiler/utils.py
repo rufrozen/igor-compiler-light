@@ -10,9 +10,9 @@ def write_file(file, text):
         
 def json2str(obj, compact=False):
     if compact:
-        return json.dumps(obj, separators=(',',':'))
+        return json.dumps(obj, sort_keys=True, separators=(',',':'))
     else:
-        return json.dumps(obj, indent=4, separators=(',', ': '))
+        return json.dumps(obj, sort_keys=True, indent=4, separators=(',', ': '))
 
 def str2json(str):
     return json.loads(str)

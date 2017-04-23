@@ -190,7 +190,7 @@ class IgorParser:
     def parse(self, filename):
         try:
             text = read_file(filename)
-            self.data = parse(text, File).build()
+            self.data = parse(text, File, comment=comment_cpp).build()
             return True
         except SyntaxError as err:
             self.error = err

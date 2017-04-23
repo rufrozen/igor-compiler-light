@@ -9,16 +9,18 @@ enum SomeEnum
 record RecordEmpty
 {
 }
-
+// comment
 record RecordSimple
 {
     bool bool_val;
     string str_val;
+    // comment up
     # cool number
+    // comment down
     number int_val;
     ?number opt_int;
     int json_number;
-    json row_json;
+    json row_json; // comment end
 }
 
 # Some desc text
