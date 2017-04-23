@@ -5,7 +5,7 @@ from .utils import *
 
 class IgorCompiler:
     def __init__(self):
-        self.version = "0.1.1"
+        self.version = "0.1.2"
         self.data = []
         self.args = None
     
@@ -54,6 +54,8 @@ class IgorCompiler:
                 self.gen_ts()
             except GenerationError as e:
                 print(e)
+
+        print("DONE")
             
     def gen_ts(self):
         target_dir = self.args.typescript
