@@ -308,7 +308,7 @@
                 "name": "data2"
             }
         ],
-        "name": "BigInnerRecord3",
+        "name": "BigInnerRecordStatusEnum",
         "tag": "enum"
     },
     {
@@ -324,48 +324,15 @@
             },
             {
                 "description": "",
-                "name": "data_enum",
+                "name": "status",
                 "optional": false,
                 "type": {
-                    "ref": "BigInnerRecord3",
+                    "ref": "BigInnerRecordStatusEnum",
                     "tag": "ref"
                 }
             }
         ],
-        "name": "BigInnerRecord2",
-        "tag": "record"
-    },
-    {
-        "description": "",
-        "items": [
-            {
-                "description": "",
-                "name": "data_record",
-                "optional": false,
-                "type": {
-                    "ref": "BigInnerRecord2",
-                    "tag": "ref"
-                }
-            },
-            {
-                "description": "",
-                "name": "value",
-                "optional": false,
-                "type": {
-                    "tag": "int"
-                }
-            },
-            {
-                "description": "",
-                "name": "data_outside_enum",
-                "optional": false,
-                "type": {
-                    "ref": "BigInnerRecord3",
-                    "tag": "ref"
-                }
-            }
-        ],
-        "name": "BigInnerRecord1",
+        "name": "BigInnerRecord",
         "tag": "record"
     },
     {
@@ -380,7 +347,7 @@
                 "name": "type2"
             }
         ],
-        "name": "InlineRecordDeleteEnum",
+        "name": "DeleteSecondRequestBodyItemEnum",
         "tag": "enum"
     },
     {
@@ -396,15 +363,15 @@
             },
             {
                 "description": "",
-                "name": "data_enum",
+                "name": "item",
                 "optional": false,
                 "type": {
-                    "ref": "InlineRecordDeleteEnum",
+                    "ref": "DeleteSecondRequestBodyItemEnum",
                     "tag": "ref"
                 }
             }
         ],
-        "name": "InlineRecordDelete",
+        "name": "DeleteSecondRequestBody",
         "tag": "record"
     },
     {
@@ -419,12 +386,12 @@
                 }
             }
         ],
-        "name": "InlineRecordReply",
+        "name": "DeleteSecondResponse200",
         "tag": "record"
     },
     {
         "body": {
-            "ref": "InlineRecordDelete",
+            "ref": "DeleteSecondRequestBody",
             "tag": "ref"
         },
         "description": "",
@@ -445,7 +412,15 @@
                 "description": "",
                 "status": 200,
                 "type": {
-                    "ref": "InlineRecordReply",
+                    "ref": "DeleteSecondResponse200",
+                    "tag": "ref"
+                }
+            },
+            {
+                "description": "",
+                "status": 400,
+                "type": {
+                    "ref": "BigInnerRecord",
                     "tag": "ref"
                 }
             },

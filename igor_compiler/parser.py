@@ -1,4 +1,4 @@
-import json, traceback
+import json, traceback, inflection
 from pypeg2 import *
 from .utils import *
 
@@ -105,14 +105,9 @@ class Enum:
             'items': self.items.build(context)
         })
 
-record_item = flag("optional", "?"), attr('type', Type), selfname
-
 class RecordItem():
-    grammar = selfdesc, record_item, ";"
-    
-    def collect(self, context): pass
+    grammar = selfdesc, flag("optional", "?"), attr('type', Type), selfname, ";"
     def build(self, context):
-        self.collect(context)
         return {
             'name': self.name,
             'description': getdesc(self.desc),
@@ -120,41 +115,49 @@ class RecordItem():
             'optional': self.optional
         }
 
-class RecordBody(List):
-    def build(self, context):
-        return [a.build(context) for a in self]
+def make_name(data):
+    return inflection.camelize('_'.join(data))
 
-class RecordInlineRecord(RecordItem):
-    grammar = selfdesc, "record", record_item, attr("items", RecordBody)
-    def collect(self, context):
-        context.add({
-            'tag': 'record',
-            'description': getdesc(self.desc),
-            'name': self.type.name,
-            'items': self.items.build(context)
-        })
-    
-class RecordInlineEnum(RecordItem):
-    grammar = selfdesc, "enum", record_item, attr("items", EnumBody)
+class RecordInlineEnum():
+    grammar = selfdesc, "enum", flag("optional", "?"), selfname, attr("items", EnumBody)
+    def fullname(self, context):
+        return make_name(context.record_name + [self.name, 'enum'])
     def collect(self, context):
         context.add({
             'tag': 'enum',
             'description': getdesc(self.desc),
-            'name': self.type.name,
+            'name': self.fullname(context),
             'items': self.items.build(context)
         })
 
-RecordBody.grammar = "{",  maybe_some([RecordItem, RecordInlineRecord, RecordInlineEnum]), "}"
+    def build(self, context):
+        self.collect(context)
+        return {
+            'name': self.name,
+            'description': getdesc(self.desc),
+            'type': {
+                'tag': 'ref',
+                'ref': self.fullname(context),
+            },
+            'optional': self.optional
+        }
+    
+class RecordBody(List):
+    grammar = "{",  maybe_some([RecordItem, RecordInlineEnum]), "}"
+    def build(self, context):
+        return [a.build(context) for a in self]
 
 class Record(List):
     grammar = selfdesc, "record", selfname, attr("items", RecordBody)
     def collect(self, context):
+        context.record_name = [self.name]
         context.add({
             'tag': 'record',
             'description': getdesc(self.desc),
-            'name': self.name,
+            'name': make_name(context.record_name),
             'items': self.items.build(context)
         })
+        context.record_name = []
 
 class ServiceMethod():
     grammar = "method", attr("method", MethodType), ";"
@@ -186,34 +189,44 @@ class ServiceUrl(List):
     
 class ServiceInline():
     grammar = attr("type", Type), ";"
-    def collect(self, context): pass
     def build(self, context):
-        self.collect(context)
         return self.type.build()
 
-class ServiceRecordInline(ServiceInline):
-    grammar = "record", attr("type", Type), attr("items", RecordBody)
+class ServiceRecordInline():
+    grammar = "record", attr("items", RecordBody)
     def collect(self, context):
         context.add({
             'tag': 'record',
             'description': '',
-            'name': self.type.name,
+            'name': make_name(context.record_name),
             'items': self.items.build(context)
         })
+    def build(self, context):
+        self.collect(context)
+        return {
+            'tag': 'ref',
+            'ref': make_name(context.record_name)
+        }
 
 class ServiceBody():
     grammar = "body", attr("data", [ServiceRecordInline, ServiceInline])
     def build(self, context):
-        return self.data.build(context);
+        context.record_name = [context.service_name, 'request', 'body']
+        res = self.data.build(context);
+        context.record_name = []
+        return res
         
 class ServiceResponse():
     grammar = selfdesc, "response", attr("status", Number), attr("data", [ServiceRecordInline, ServiceInline])
     def build(self, context):
-        return {
+        context.record_name = [context.service_name, 'response', str(self.status)]
+        res = {
             'status': self.status,
             'description': getdesc(self.desc),
             'type': self.data.build(context)
         }
+        context.record_name = []
+        return res
     
 class Service(List):
     grammar = selfdesc, "service", selfname, "{",  maybe_some([ServiceMethod, ServiceUrl, ServiceParam, ServiceQuery, ServiceBody, ServiceResponse]), "}"
@@ -228,6 +241,7 @@ class Service(List):
         return [a.build(context) for a in self if type(a) is childType]
     
     def collect(self, context):
+        context.service_name = self.name
         context.add({
             'tag': 'service',
             'description': getdesc(self.desc),
@@ -239,6 +253,7 @@ class Service(List):
             'params': self.filter_build(context, ServiceParam),
             'responses': self.filter_build(context, ServiceResponse),
         })
+        context.service_name = None
         
 
 class Definition():
@@ -256,6 +271,8 @@ class IgorParser:
     def __init__(self):
         self.error = None
         self.data = None
+        self.record_name = []
+        self.service_name = None
 
     def add(self, item):
         self.data.append(item)

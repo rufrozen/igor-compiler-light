@@ -51,13 +51,13 @@ export function SomeEnumFromString(json: string)
     }
 }
 
-export const enum BigInnerRecord3
+export const enum BigInnerRecordStatusEnum
 {
     Null,
     Data1,
     Data2
 }
-export function BigInnerRecord3ToString(val: BigInnerRecord3)
+export function BigInnerRecordStatusEnumToString(val: BigInnerRecordStatusEnum)
 {
     let arr = [
         null,
@@ -66,23 +66,23 @@ export function BigInnerRecord3ToString(val: BigInnerRecord3)
     ];
     return arr[val]
 }
-export function BigInnerRecord3FromString(json: string)
+export function BigInnerRecordStatusEnumFromString(json: string)
 {
     switch(json)
     {
-        case 'data1': return BigInnerRecord3.Data1;
-        case 'data2': return BigInnerRecord3.Data2;
-        default: return BigInnerRecord3.Null;
+        case 'data1': return BigInnerRecordStatusEnum.Data1;
+        case 'data2': return BigInnerRecordStatusEnum.Data2;
+        default: return BigInnerRecordStatusEnum.Null;
     }
 }
 
-export const enum InlineRecordDeleteEnum
+export const enum DeleteSecondRequestBodyItemEnum
 {
     Null,
     Type1,
     Type2
 }
-export function InlineRecordDeleteEnumToString(val: InlineRecordDeleteEnum)
+export function DeleteSecondRequestBodyItemEnumToString(val: DeleteSecondRequestBodyItemEnum)
 {
     let arr = [
         null,
@@ -91,13 +91,13 @@ export function InlineRecordDeleteEnumToString(val: InlineRecordDeleteEnum)
     ];
     return arr[val]
 }
-export function InlineRecordDeleteEnumFromString(json: string)
+export function DeleteSecondRequestBodyItemEnumFromString(json: string)
 {
     switch(json)
     {
-        case 'type1': return InlineRecordDeleteEnum.Type1;
-        case 'type2': return InlineRecordDeleteEnum.Type2;
-        default: return InlineRecordDeleteEnum.Null;
+        case 'type1': return DeleteSecondRequestBodyItemEnum.Type1;
+        case 'type2': return DeleteSecondRequestBodyItemEnum.Type2;
+        default: return DeleteSecondRequestBodyItemEnum.Null;
     }
 }
 
@@ -221,16 +221,16 @@ export class RecordSecond
     }
 }
 
-export class BigInnerRecord2
+export class BigInnerRecord
 {
     result: boolean; // 
-    dataEnum: BigInnerRecord3; // 
+    status: BigInnerRecordStatusEnum; // 
     
-    static fromJson(json: Object): BigInnerRecord2
+    static fromJson(json: Object): BigInnerRecord
     {
-        let obj = new BigInnerRecord2();
+        let obj = new BigInnerRecord();
         obj.result = <boolean>json['result'];
-        obj.dataEnum = BigInnerRecord3FromString(json['data_enum']);
+        obj.status = BigInnerRecordStatusEnumFromString(json['status']);
         return obj;
     }
 
@@ -239,49 +239,22 @@ export class BigInnerRecord2
         let obj: Object =
         {
             'result': this.result,
-            'data_enum': BigInnerRecord3ToString(this.dataEnum),
+            'status': BigInnerRecordStatusEnumToString(this.status),
         }
         return obj;
     }
 }
 
-export class BigInnerRecord1
-{
-    dataRecord: BigInnerRecord2; // 
-    value: number; // 
-    dataOutsideEnum: BigInnerRecord3; // 
-    
-    static fromJson(json: Object): BigInnerRecord1
-    {
-        let obj = new BigInnerRecord1();
-        obj.dataRecord = BigInnerRecord2.fromJson(json['data_record']);
-        obj.value = <number>json['value'];
-        obj.dataOutsideEnum = BigInnerRecord3FromString(json['data_outside_enum']);
-        return obj;
-    }
-
-    toJson(): Object
-    {
-        let obj: Object =
-        {
-            'data_record': this.dataRecord.toJson(),
-            'value': this.value,
-            'data_outside_enum': BigInnerRecord3ToString(this.dataOutsideEnum),
-        }
-        return obj;
-    }
-}
-
-export class InlineRecordDelete
+export class DeleteSecondRequestBody
 {
     data: number; // 
-    dataEnum: InlineRecordDeleteEnum; // 
+    item: DeleteSecondRequestBodyItemEnum; // 
     
-    static fromJson(json: Object): InlineRecordDelete
+    static fromJson(json: Object): DeleteSecondRequestBody
     {
-        let obj = new InlineRecordDelete();
+        let obj = new DeleteSecondRequestBody();
         obj.data = <number>json['data'];
-        obj.dataEnum = InlineRecordDeleteEnumFromString(json['data_enum']);
+        obj.item = DeleteSecondRequestBodyItemEnumFromString(json['item']);
         return obj;
     }
 
@@ -290,19 +263,19 @@ export class InlineRecordDelete
         let obj: Object =
         {
             'data': this.data,
-            'data_enum': InlineRecordDeleteEnumToString(this.dataEnum),
+            'item': DeleteSecondRequestBodyItemEnumToString(this.item),
         }
         return obj;
     }
 }
 
-export class InlineRecordReply
+export class DeleteSecondResponse200
 {
     error: string; // 
     
-    static fromJson(json: Object): InlineRecordReply
+    static fromJson(json: Object): DeleteSecondResponse200
     {
-        let obj = new InlineRecordReply();
+        let obj = new DeleteSecondResponse200();
         obj.error = <string>json['error'];
         return obj;
     }

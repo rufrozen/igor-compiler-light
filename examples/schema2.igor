@@ -7,19 +7,14 @@ record RecordSecond
     dict<string, list<RecordComplex>> complex_dict;
 }
 
-record BigInnerRecord1
+record BigInnerRecord
 {
-    record BigInnerRecord2 data_record
+    bool result;
+    enum status
     {
-        bool result;
-        enum BigInnerRecord3 data_enum
-        {
-            data1;
-            data2;
-        }
+        data1;
+        data2;
     }
-    int value;
-    BigInnerRecord3 data_outside_enum;
 }
 
 service deleteSecond
@@ -28,18 +23,19 @@ service deleteSecond
     url /api/log/delete;
     query string some_q;
     
-    body record InlineRecordDelete
+    body record
     {
         int data;
-        enum InlineRecordDeleteEnum data_enum
+        enum item
         {
             type1;
             type2;
         }
     }
-    response 200 record InlineRecordReply
+    response 200 record
     {
         string error;
     }
+    response 400 BigInnerRecord;
     response 500 RecordSecond;
 }
