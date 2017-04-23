@@ -195,13 +195,10 @@ class IgorParser:
         except SyntaxError as err:
             self.error = err
             return False
-
-    def save(self, path, compact=False):
-        write_file(path, json2str(self.data, compact))
     
     def print_error(self):
-        print('line: ' + str(err.lineno))
-        print('position: ' + str(err.offset))
-        print('text: ' + str(err.text))
-        print('error: ' + str(err.msg))
+        print('line: ' + str(self.error.lineno))
+        print('position: ' + str(self.error.offset))
+        print('text: ' + str(self.error.text))
+        print('error: ' + str(self.error.msg))
         

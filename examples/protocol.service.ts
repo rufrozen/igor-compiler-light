@@ -42,4 +42,19 @@ export abstract class ProtocolService
             .map(response => Protocol.RecordSimple.fromJson(response.json()));
     }
 
+    // 
+    deleteSecond(someQ: string): Observable<Protocol.RecordSecond>
+    {
+        return this.delete('/api/log/delete', {'some_q': someQ}, {})
+            .catch(response =>
+            {
+                switch(response.status)
+                {
+                    case 500: return Observable.throw(Protocol.RecordComplex.fromJson(response.json()));
+                    default: return Observable.throw(response);
+                }
+            })
+            .map(response => Protocol.RecordSecond.fromJson(response.json()));
+    }
+
 }

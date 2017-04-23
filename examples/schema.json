@@ -1,8 +1,6 @@
 [
     {
-        "tag": "enum",
         "description": " Some desc text",
-        "name": "SomeEnum",
         "items": [
             {
                 "description": "",
@@ -12,171 +10,189 @@
                 "description": " important tag",
                 "name": "val2"
             }
-        ]
+        ],
+        "tag": "enum",
+        "name": "SomeEnum"
     },
     {
-        "tag": "record",
         "description": "",
-        "name": "RecordEmpty",
-        "items": []
+        "items": [],
+        "tag": "record",
+        "name": "RecordEmpty"
     },
     {
-        "tag": "record",
         "description": "",
-        "name": "RecordSimple",
         "items": [
             {
-                "name": "bool_val",
                 "description": "",
+                "optional": false,
+                "name": "bool_val",
                 "type": {
                     "tag": "bool"
-                },
-                "optional": false
+                }
             },
             {
-                "name": "str_val",
                 "description": "",
+                "optional": false,
+                "name": "str_val",
                 "type": {
                     "tag": "string"
-                },
-                "optional": false
+                }
             },
             {
-                "name": "int_val",
                 "description": " cool number",
+                "optional": false,
+                "name": "int_val",
                 "type": {
                     "tag": "number"
-                },
-                "optional": false
+                }
             },
             {
+                "description": "",
+                "optional": true,
                 "name": "opt_int",
-                "description": "",
                 "type": {
                     "tag": "number"
-                },
-                "optional": true
+                }
             },
             {
-                "name": "json_number",
                 "description": "",
+                "optional": false,
+                "name": "json_number",
                 "type": {
                     "tag": "int"
-                },
-                "optional": false
+                }
             },
             {
-                "name": "row_json",
                 "description": "",
+                "optional": false,
+                "name": "row_json",
                 "type": {
                     "tag": "json"
-                },
-                "optional": false
+                }
             }
-        ]
+        ],
+        "tag": "record",
+        "name": "RecordSimple"
     },
     {
-        "tag": "record",
         "description": " Some desc text",
-        "name": "RecordComplex",
         "items": [
             {
-                "name": "simple",
                 "description": "",
+                "optional": false,
+                "name": "simple",
                 "type": {
                     "tag": "ref",
                     "ref": "RecordSimple"
-                },
-                "optional": false
+                }
             },
             {
-                "name": "keys",
                 "description": "",
+                "optional": false,
+                "name": "keys",
                 "type": {
                     "tag": "list",
                     "item_type": {
                         "tag": "string"
                     }
-                },
-                "optional": false
+                }
             },
             {
-                "name": "enums",
                 "description": "",
+                "optional": false,
+                "name": "enums",
                 "type": {
                     "tag": "list",
                     "item_type": {
                         "tag": "ref",
                         "ref": "SomeEnum"
                     }
-                },
-                "optional": false
+                }
             },
             {
-                "name": "some_enum",
                 "description": "",
+                "optional": false,
+                "name": "some_enum",
                 "type": {
                     "tag": "ref",
                     "ref": "SomeEnum"
-                },
-                "optional": false
+                }
             },
             {
-                "name": "custom_type",
                 "description": "",
+                "optional": false,
+                "name": "custom_type",
                 "type": {
                     "tag": "Date"
-                },
-                "optional": false
+                }
             }
-        ]
+        ],
+        "tag": "record",
+        "name": "RecordComplex"
     },
     {
-        "tag": "service",
         "description": "",
+        "tag": "service",
         "name": "getLog",
         "method": "GET",
+        "query": [
+            {
+                "description": "",
+                "name": "some_q",
+                "type": {
+                    "tag": "string"
+                }
+            }
+        ],
         "url": [
             {
                 "tag": "url",
                 "url": "/api/log"
             }
         ],
-        "body": null,
+        "responses": [
+            {
+                "description": "",
+                "type": {
+                    "tag": "ref",
+                    "ref": "RecordSimple"
+                },
+                "status": 200
+            },
+            {
+                "description": "",
+                "type": {
+                    "tag": "ref",
+                    "ref": "SomeEnum"
+                },
+                "status": 500
+            }
+        ],
+        "params": [],
+        "body": null
+    },
+    {
+        "description": " Some big Desc text",
+        "tag": "service",
+        "name": "postLog",
+        "method": "POST",
         "query": [
             {
-                "name": "some_q",
+                "description": " it is query",
+                "name": "bytes",
+                "type": {
+                    "tag": "number"
+                }
+            },
+            {
                 "description": "",
+                "name": "text",
                 "type": {
                     "tag": "string"
                 }
             }
         ],
-        "params": [],
-        "responses": [
-            {
-                "status": 200,
-                "description": "",
-                "type": {
-                    "tag": "ref",
-                    "ref": "RecordSimple"
-                }
-            },
-            {
-                "status": 500,
-                "description": "",
-                "type": {
-                    "tag": "ref",
-                    "ref": "SomeEnum"
-                }
-            }
-        ]
-    },
-    {
-        "tag": "service",
-        "description": " Some big Desc text",
-        "name": "postLog",
-        "method": "POST",
         "url": [
             {
                 "tag": "url",
@@ -191,52 +207,93 @@
                 "url": "/hello"
             }
         ],
-        "body": {
-            "tag": "ref",
-            "ref": "RecordSimple"
-        },
-        "query": [
+        "responses": [
             {
-                "name": "bytes",
-                "description": " it is query",
+                "description": " Good response",
                 "type": {
-                    "tag": "number"
-                }
+                    "tag": "ref",
+                    "ref": "RecordSimple"
+                },
+                "status": 200
             },
             {
-                "name": "text",
                 "description": "",
                 "type": {
-                    "tag": "string"
-                }
+                    "tag": "ref",
+                    "ref": "SomeEnum"
+                },
+                "status": 500
             }
         ],
         "params": [
             {
-                "name": "id",
                 "description": " very cool param",
+                "name": "id",
                 "type": {
                     "tag": "int"
                 }
             }
         ],
-        "responses": [
+        "body": {
+            "tag": "ref",
+            "ref": "RecordSimple"
+        }
+    },
+    {
+        "description": "",
+        "items": [
             {
-                "status": 200,
-                "description": " Good response",
+                "description": "",
+                "optional": false,
+                "name": "obj",
                 "type": {
                     "tag": "ref",
-                    "ref": "RecordSimple"
+                    "ref": "RecordComplex"
                 }
-            },
+            }
+        ],
+        "tag": "record",
+        "name": "RecordSecond"
+    },
+    {
+        "description": "",
+        "tag": "service",
+        "name": "deleteSecond",
+        "method": "DELETE",
+        "query": [
             {
-                "status": 500,
+                "description": "",
+                "name": "some_q",
+                "type": {
+                    "tag": "string"
+                }
+            }
+        ],
+        "url": [
+            {
+                "tag": "url",
+                "url": "/api/log/delete"
+            }
+        ],
+        "responses": [
+            {
                 "description": "",
                 "type": {
                     "tag": "ref",
-                    "ref": "SomeEnum"
-                }
+                    "ref": "RecordSecond"
+                },
+                "status": 200
+            },
+            {
+                "description": "",
+                "type": {
+                    "tag": "ref",
+                    "ref": "RecordComplex"
+                },
+                "status": 500
             }
-        ]
+        ],
+        "params": [],
+        "body": null
     }
 ]

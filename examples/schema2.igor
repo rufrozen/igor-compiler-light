@@ -1,0 +1,14 @@
+
+record RecordSecond
+{
+    RecordComplex obj;
+}
+
+service deleteSecond
+{
+    method DELETE;
+    url /api/log/delete;
+    query string some_q;
+    response 200 RecordSecond;
+    response 500 RecordComplex;
+}

@@ -123,3 +123,24 @@ export class RecordComplex
         return obj;
     }
 }
+
+export class RecordSecond
+{
+    obj: RecordComplex; // 
+    
+    static fromJson(json: Object): RecordSecond
+    {
+        let obj = new RecordSecond();
+        obj.obj = RecordComplex.fromJson(json['obj']);
+        return obj;
+    }
+
+    toJson(): Object
+    {
+        let obj: Object =
+        {
+            'obj': this.obj.toJson(),
+        }
+        return obj;
+    }
+}
