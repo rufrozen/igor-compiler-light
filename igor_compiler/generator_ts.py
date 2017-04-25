@@ -153,6 +153,8 @@ def enum_item_desc(data):
 def enum_item(data):
     return spaces(1) + inflection.camelize(data['name']) + ', // ' + enum_item_desc(data)
 
+
+
 class Enum:
     def __init__(self, schema):
         self.schema = schema
@@ -170,6 +172,9 @@ class Enum:
     @property
     def items_name(self): return [a['name'] for a in self.items]
     
+    @property
+    def items_desc(self): return [enum_item_desc(a) for a in self.items]
+    
     def item_desc(self, item):
         for a in self.items:
             if a['name'] == item:
@@ -179,6 +184,10 @@ class Enum:
     @property
     def delcaration(self):
         return '\n'.join([enum_item(v) for v in self.items])
+    
+    @property
+    def to_desc(self):
+        return ',\n'.join([spaces(2) + wrap(v.replace("'", "\\'").strip()) for v in self.items_desc])
     
     @property
     def to_json(self):
@@ -212,6 +221,14 @@ export function {s.name}FromString(json: string)
 {s.from_json}
         default: return {s.name}.Null;
     }}
+}}
+export function {s.name}ToDescription(val: {s.name})
+{{
+    let arr = [
+        null,
+{s.to_desc}
+    ];
+    return arr[val]
 }}
 '''.format(s=self)
 

@@ -56,6 +56,15 @@ export function SomeEnumFromString(json: string)
         default: return SomeEnum.Null;
     }
 }
+export function SomeEnumToDescription(val: SomeEnum)
+{
+    let arr = [
+        null,
+        '',
+        'important tag'
+    ];
+    return arr[val]
+}
 
 // 
 export const enum GlobalEnum
@@ -85,6 +94,16 @@ export function GlobalEnumFromString(json: string)
         default: return GlobalEnum.Null;
     }
 }
+export function GlobalEnumToDescription(val: GlobalEnum)
+{
+    let arr = [
+        null,
+        'is it global_1',
+        'is it global_2',
+        'is it global_3'
+    ];
+    return arr[val]
+}
 
 // 
 export const enum BigInnerRecordStatusEnum
@@ -110,6 +129,15 @@ export function BigInnerRecordStatusEnumFromString(json: string)
         case 'data2': return BigInnerRecordStatusEnum.Data2;
         default: return BigInnerRecordStatusEnum.Null;
     }
+}
+export function BigInnerRecordStatusEnumToDescription(val: BigInnerRecordStatusEnum)
+{
+    let arr = [
+        null,
+        '',
+        ''
+    ];
+    return arr[val]
 }
 
 //  is it custom
@@ -140,6 +168,16 @@ export function BigInnerRecordCustomEnumFromString(json: string)
         default: return BigInnerRecordCustomEnum.Null;
     }
 }
+export function BigInnerRecordCustomEnumToDescription(val: BigInnerRecordCustomEnum)
+{
+    let arr = [
+        null,
+        'is it my_val_1',
+        'is it global_3',
+        ''
+    ];
+    return arr[val]
+}
 
 // 
 export const enum DeleteSecondRequestBodyItemEnum
@@ -168,6 +206,16 @@ export function DeleteSecondRequestBodyItemEnumFromString(json: string)
         case 'global_1': return DeleteSecondRequestBodyItemEnum.Global1;
         default: return DeleteSecondRequestBodyItemEnum.Null;
     }
+}
+export function DeleteSecondRequestBodyItemEnumToDescription(val: DeleteSecondRequestBodyItemEnum)
+{
+    let arr = [
+        null,
+        '',
+        '',
+        'is it global_1'
+    ];
+    return arr[val]
 }
 
 export class RecordEmpty
