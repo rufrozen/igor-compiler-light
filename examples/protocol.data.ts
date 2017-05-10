@@ -234,7 +234,8 @@ export class RecordEmpty
         let obj: Object =
         {
 
-        }
+        };
+
         return obj;
     }
 }
@@ -270,7 +271,8 @@ export class RecordSimple
             'opt_int': this.optInt == null ? null : this.optInt,
             'json_number': this.jsonNumber,
             'row_json': this.rowJson,
-        }
+        };
+
         return obj;
     }
 }
@@ -303,7 +305,8 @@ export class RecordComplex
             'enums': listToJson(this.enums, el1 => SomeEnumToString(el1)),
             'some_enum': SomeEnumToString(this.someEnum),
             'custom_type': Math.ceil(this.customType.getTime() / 1000),
-        }
+        };
+
         return obj;
     }
 }
@@ -333,7 +336,8 @@ export class RecordSecond
             'complex_list': listToJson(this.complexList, el1 => listToJson(el1, el2 => el2.toJson())),
             'simple_dict': dictToJson(this.simpleDict, el1 => el1),
             'complex_dict': dictToJson(this.complexDict, el1 => listToJson(el1, el2 => el2.toJson())),
-        }
+        };
+
         return obj;
     }
 }
@@ -360,7 +364,53 @@ export class BigInnerRecord
             'result': this.result,
             'status': BigInnerRecordStatusEnumToString(this.status),
             'custom': BigInnerRecordCustomEnumToString(this.custom),
-        }
+        };
+
+        return obj;
+    }
+}
+
+export class PartialRecord
+{
+    private _str: string; // 
+    private _has_str: boolean = false;
+    get str() : string { return this._str; }
+    set str(val : string) { this._str = val; this._has_str = true; }
+    private _optInt: number | null; // 
+    private _has_optInt: boolean = false;
+    get optInt() : number | null { return this._optInt; }
+    set optInt(val : number | null) { this._optInt = val; this._has_optInt = true; }
+    private _list: Array<string>; // 
+    private _has_list: boolean = false;
+    get list() : Array<string> { return this._list; }
+    set list(val : Array<string>) { this._list = val; this._has_list = true; }
+    private _myEnum: GlobalEnum | null; // 
+    private _has_myEnum: boolean = false;
+    get myEnum() : GlobalEnum | null { return this._myEnum; }
+    set myEnum(val : GlobalEnum | null) { this._myEnum = val; this._has_myEnum = true; }
+    value: boolean; // 
+    
+    static fromJson(json: Object): PartialRecord
+    {
+        let obj = new PartialRecord();
+        obj.str = <string>json['str'];
+        obj.optInt = jsonHasValue(json, 'opt_int') ? <number>json['opt_int'] : null;
+        obj.list = listFromJson(json['list'], el1 => <string>el1);
+        obj.myEnum = jsonHasValue(json, 'my_enum') ? GlobalEnumFromString(json['my_enum']) : null;
+        obj.value = <boolean>json['value'];
+        return obj;
+    }
+
+    toJson(): Object
+    {
+        let obj: Object =
+        {
+            'value': this.value,
+        };
+        if (this._has_str) obj['str'] = this.str;
+        if (this._has_optInt) obj['opt_int'] = this.optInt == null ? null : this.optInt;
+        if (this._has_list) obj['list'] = listToJson(this.list, el1 => el1);
+        if (this._has_myEnum) obj['my_enum'] = this.myEnum == null ? null : GlobalEnumToString(this.myEnum);
         return obj;
     }
 }
@@ -384,7 +434,8 @@ export class DeleteSecondRequestBody
         {
             'data': this.data,
             'item': DeleteSecondRequestBodyItemEnumToString(this.item),
-        }
+        };
+
         return obj;
     }
 }
@@ -405,7 +456,8 @@ export class DeleteSecondResponse200
         let obj: Object =
         {
             'error': this.error,
-        }
+        };
+
         return obj;
     }
 }

@@ -153,8 +153,6 @@ def enum_item_desc(data):
 def enum_item(data):
     return spaces(1) + inflection.camelize(data['name']) + ', // ' + enum_item_desc(data)
 
-
-
 class Enum:
     def __init__(self, schema):
         self.schema = schema
@@ -246,8 +244,20 @@ class Property:
     def optional(self): return self.schema['optional']
     
     @property
-    def varname(self): return inflection.camelize(self.name, False)
+    def is_property(self): return self.schema['property']
+
+    @property
+    def has_varname(self):
+        return '_has_' + self.varname
     
+    @property
+    def private_varname(self):
+        return '_' + self.varname
+    
+    @property
+    def varname(self):
+        return inflection.camelize(self.name, False)
+        
     @property
     def vartype(self): return Type(self.schema['type'])
 
@@ -260,7 +270,15 @@ class Property:
 
     @property    
     def delcaration(self):
-        return "{s.varname}: {s.vartype_delcaration}; // {s.desc}".format(s=self)
+        if self.is_property:
+            var = "private {s.private_varname}: {s.vartype_delcaration}; // {s.desc}".format(s=self)
+            has = "private {s.has_varname}: boolean = false;".format(s=self)
+            get = "get {s.varname}() : {s.vartype_delcaration} {{ return this.{s.private_varname}; }}".format(s=self)
+            set = "set {s.varname}(val : {s.vartype_delcaration}) {{ this.{s.private_varname} = val; this.{s.has_varname} = true; }}".format(s=self)
+            return [var, has, get, set]
+        else:
+            res = "{s.varname}: {s.vartype_delcaration}; // {s.desc}".format(s=self)
+            return [res]
     
     @property
     def json_src(self): return "json['{s.name}']".format(s=self)
@@ -287,6 +305,13 @@ class Property:
         else:
             return "'{s.name}': {s.type_to_json},".format(s=self)
 
+    def property_to_json(self):
+        prefix = "if (this.{s.has_varname}) obj['{s.name}'] = "
+        if self.optional:
+            return (prefix + "{s.var_src} == null ? null : {s.type_to_json};").format(s=self)
+        else:
+            return (prefix + "{s.type_to_json};").format(s=self)
+
 class Record:
     def __init__(self, schema):
         self.schema = schema
@@ -303,7 +328,7 @@ class Record:
     
     @property
     def delcaration(self):
-        return '\n'.join([spaces(1) + p.delcaration for p in self.items])
+        return '\n'.join([spaces(1) + d for p in self.items for d in p.delcaration])
     
     @property
     def from_json(self):
@@ -311,8 +336,12 @@ class Record:
     
     @property
     def to_json(self):
-        return '\n'.join([spaces(3) + p.to_json() for p in self.items])
-        
+        return '\n'.join([spaces(3) + p.to_json() for p in self.items if not p.is_property])
+    
+    @property
+    def property_to_json(self):
+        return '\n'.join([spaces(2) + p.property_to_json() for p in self.items if p.is_property])
+    
     def generate(self):
         return '''
 export class {s.name}
@@ -331,7 +360,8 @@ export class {s.name}
         let obj: Object =
         {{
 {s.to_json}
-        }}
+        }};
+{s.property_to_json}
         return obj;
     }}
 }}

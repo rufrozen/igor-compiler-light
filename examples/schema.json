@@ -29,6 +29,7 @@
                 "description": "",
                 "name": "bool_val",
                 "optional": false,
+                "property": false,
                 "type": {
                     "tag": "bool"
                 }
@@ -37,6 +38,7 @@
                 "description": "",
                 "name": "str_val",
                 "optional": false,
+                "property": false,
                 "type": {
                     "tag": "string"
                 }
@@ -45,6 +47,7 @@
                 "description": " cool number",
                 "name": "int_val",
                 "optional": false,
+                "property": false,
                 "type": {
                     "tag": "number"
                 }
@@ -53,6 +56,7 @@
                 "description": "",
                 "name": "opt_int",
                 "optional": true,
+                "property": false,
                 "type": {
                     "tag": "number"
                 }
@@ -61,6 +65,7 @@
                 "description": "",
                 "name": "json_number",
                 "optional": false,
+                "property": false,
                 "type": {
                     "tag": "int"
                 }
@@ -69,6 +74,7 @@
                 "description": "",
                 "name": "row_json",
                 "optional": false,
+                "property": false,
                 "type": {
                     "tag": "json"
                 }
@@ -84,6 +90,7 @@
                 "description": "",
                 "name": "simple",
                 "optional": false,
+                "property": false,
                 "type": {
                     "ref": "RecordSimple",
                     "tag": "ref"
@@ -93,6 +100,7 @@
                 "description": "",
                 "name": "keys",
                 "optional": false,
+                "property": false,
                 "type": {
                     "item_type": {
                         "tag": "string"
@@ -104,6 +112,7 @@
                 "description": "",
                 "name": "enums",
                 "optional": false,
+                "property": false,
                 "type": {
                     "item_type": {
                         "ref": "SomeEnum",
@@ -116,6 +125,7 @@
                 "description": "",
                 "name": "some_enum",
                 "optional": false,
+                "property": false,
                 "type": {
                     "ref": "SomeEnum",
                     "tag": "ref"
@@ -125,6 +135,7 @@
                 "description": "",
                 "name": "custom_type",
                 "optional": false,
+                "property": false,
                 "type": {
                     "tag": "Date"
                 }
@@ -270,6 +281,7 @@
                 "description": "",
                 "name": "obj",
                 "optional": false,
+                "property": false,
                 "type": {
                     "ref": "RecordComplex",
                     "tag": "ref"
@@ -279,6 +291,7 @@
                 "description": "",
                 "name": "complex_list",
                 "optional": false,
+                "property": false,
                 "type": {
                     "item_type": {
                         "item_type": {
@@ -294,6 +307,7 @@
                 "description": "",
                 "name": "simple_dict",
                 "optional": false,
+                "property": false,
                 "type": {
                     "tag": "dict",
                     "value_type": {
@@ -305,6 +319,7 @@
                 "description": "",
                 "name": "complex_dict",
                 "optional": false,
+                "property": false,
                 "type": {
                     "tag": "dict",
                     "value_type": {
@@ -366,6 +381,7 @@
                 "description": "",
                 "name": "result",
                 "optional": false,
+                "property": false,
                 "type": {
                     "tag": "bool"
                 }
@@ -374,6 +390,7 @@
                 "description": "",
                 "name": "status",
                 "optional": false,
+                "property": false,
                 "type": {
                     "ref": "BigInnerRecordStatusEnum",
                     "tag": "ref"
@@ -383,6 +400,7 @@
                 "description": " is it custom",
                 "name": "custom",
                 "optional": false,
+                "property": false,
                 "type": {
                     "ref": "BigInnerRecordCustomEnum",
                     "tag": "ref"
@@ -390,6 +408,62 @@
             }
         ],
         "name": "BigInnerRecord",
+        "tag": "record"
+    },
+    {
+        "description": "",
+        "items": [
+            {
+                "description": "",
+                "name": "str",
+                "optional": false,
+                "property": true,
+                "type": {
+                    "tag": "string"
+                }
+            },
+            {
+                "description": "",
+                "name": "opt_int",
+                "optional": true,
+                "property": true,
+                "type": {
+                    "tag": "int"
+                }
+            },
+            {
+                "description": "",
+                "name": "list",
+                "optional": false,
+                "property": true,
+                "type": {
+                    "item_type": {
+                        "tag": "string"
+                    },
+                    "tag": "list"
+                }
+            },
+            {
+                "description": "",
+                "name": "my_enum",
+                "optional": true,
+                "property": true,
+                "type": {
+                    "ref": "GlobalEnum",
+                    "tag": "ref"
+                }
+            },
+            {
+                "description": "",
+                "name": "value",
+                "optional": false,
+                "property": false,
+                "type": {
+                    "tag": "bool"
+                }
+            }
+        ],
+        "name": "PartialRecord",
         "tag": "record"
     },
     {
@@ -421,6 +495,7 @@
                 "description": "",
                 "name": "data",
                 "optional": false,
+                "property": false,
                 "type": {
                     "tag": "int"
                 }
@@ -429,6 +504,7 @@
                 "description": "",
                 "name": "item",
                 "optional": false,
+                "property": false,
                 "type": {
                     "ref": "DeleteSecondRequestBodyItemEnum",
                     "tag": "ref"
@@ -445,6 +521,7 @@
                 "description": "",
                 "name": "error",
                 "optional": false,
+                "property": false,
                 "type": {
                     "tag": "string"
                 }

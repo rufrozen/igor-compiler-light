@@ -107,20 +107,21 @@ class Enum:
         })
 
 class RecordItem():
-    grammar = selfdesc, flag("optional", "?"), attr('type', Type), selfname, ";"
+    grammar = selfdesc, flag("property", "@"), flag("optional", "?"), attr('type', Type), selfname, ";"
     def build(self, context):
         return {
             'name': self.name,
             'description': getdesc(self.desc),
             'type': self.type.build(),
-            'optional': self.optional
+            'optional': self.optional,
+            'property': self.property
         }
 
 def make_name(data):
     return inflection.camelize('_'.join(data))
 
 class RecordInlineEnum():
-    grammar = selfdesc, "enum", flag("optional", "?"), selfname, attr("items", EnumBody)
+    grammar = selfdesc, "enum", flag("property", "@"), flag("optional", "?"), selfname, attr("items", EnumBody)
     def fullname(self, context):
         return make_name(context.record_name + [self.name, 'enum'])
     def collect(self, context):
@@ -140,7 +141,8 @@ class RecordInlineEnum():
                 'tag': 'ref',
                 'ref': self.fullname(context),
             },
-            'optional': self.optional
+            'optional': self.optional,
+            'property': self.property
         }
     
 class RecordBody(List):

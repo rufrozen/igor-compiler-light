@@ -35,6 +35,15 @@ record BigInnerRecord
     }
 }
 
+record PartialRecord
+{
+    @string str;
+    @?int opt_int;
+    @list<string> list;
+    @?GlobalEnum my_enum;
+    bool value;
+}
+
 service deleteSecond
 {
     method DELETE;
