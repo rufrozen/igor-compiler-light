@@ -31,6 +31,34 @@ function jsonHasValue(json: Object, key: string)
     return key in json && json[key] != null;
 }
 
+function dictClone<T>(data: {[key: string]: T}, copy: (data: T) => T)
+{
+    let res: Object = {};
+    for (let key in data)
+        res[key] = copy(data[key]);
+    return res
+}
+
+function listClone<T>(data: T[], copy: (data: T) => T)
+{
+    return data.map(copy);
+}
+
+function stringClone(str: string)
+{
+    return (' ' + str).slice(1);
+}
+
+function jsonClone(json: any)
+{
+    return JSON.parse(JSON.stringify(json));
+}
+
+function dateClone(date: Date)
+{
+    return new Date(date.getTime());
+}
+
 //  Some desc text
 export const enum SomeEnum
 {
@@ -238,6 +266,13 @@ export class RecordEmpty
 
         return obj;
     }
+
+    clone(): RecordEmpty
+    {
+        let res = new RecordEmpty();
+
+        return res;
+    }
 }
 
 export class RecordSimple
@@ -275,6 +310,18 @@ export class RecordSimple
 
         return obj;
     }
+
+    clone(): RecordSimple
+    {
+        let res = new RecordSimple();
+        res.boolVal = this.boolVal;
+        res.strVal = stringClone(this.strVal);
+        res.intVal = this.intVal;
+        res.optInt = this.optInt == null ? null : this.optInt;
+        res.jsonNumber = this.jsonNumber;
+        res.rowJson = jsonClone(this.rowJson);
+        return res;
+    }
 }
 
 export class RecordComplex
@@ -309,6 +356,17 @@ export class RecordComplex
 
         return obj;
     }
+
+    clone(): RecordComplex
+    {
+        let res = new RecordComplex();
+        res.simple = this.simple.clone();
+        res.keys = listClone(this.keys, el1 => stringClone(el1));
+        res.enums = listClone(this.enums, el1 => el1);
+        res.someEnum = this.someEnum;
+        res.customType = dateClone(this.customType);
+        return res;
+    }
 }
 
 export class RecordSecond
@@ -340,6 +398,16 @@ export class RecordSecond
 
         return obj;
     }
+
+    clone(): RecordSecond
+    {
+        let res = new RecordSecond();
+        res.obj = this.obj.clone();
+        res.complexList = listClone(this.complexList, el1 => listClone(el1, el2 => el2.clone()));
+        res.simpleDict = dictClone(this.simpleDict, el1 => el1);
+        res.complexDict = dictClone(this.complexDict, el1 => listClone(el1, el2 => el2.clone()));
+        return res;
+    }
 }
 
 export class BigInnerRecord
@@ -367,6 +435,15 @@ export class BigInnerRecord
         };
 
         return obj;
+    }
+
+    clone(): BigInnerRecord
+    {
+        let res = new BigInnerRecord();
+        res.result = this.result;
+        res.status = this.status;
+        res.custom = this.custom;
+        return res;
     }
 }
 
@@ -413,6 +490,17 @@ export class PartialRecord
         if (this._has_myEnum) obj['my_enum'] = this.myEnum == null ? null : GlobalEnumToString(this.myEnum);
         return obj;
     }
+
+    clone(): PartialRecord
+    {
+        let res = new PartialRecord();
+        res.str = stringClone(this.str);
+        res.optInt = this.optInt == null ? null : this.optInt;
+        res.list = listClone(this.list, el1 => stringClone(el1));
+        res.myEnum = this.myEnum == null ? null : this.myEnum;
+        res.value = this.value;
+        return res;
+    }
 }
 
 export class DeleteSecondRequestBody
@@ -438,6 +526,14 @@ export class DeleteSecondRequestBody
 
         return obj;
     }
+
+    clone(): DeleteSecondRequestBody
+    {
+        let res = new DeleteSecondRequestBody();
+        res.data = this.data;
+        res.item = this.item;
+        return res;
+    }
 }
 
 export class DeleteSecondResponse200
@@ -459,5 +555,12 @@ export class DeleteSecondResponse200
         };
 
         return obj;
+    }
+
+    clone(): DeleteSecondResponse200
+    {
+        let res = new DeleteSecondResponse200();
+        res.error = stringClone(this.error);
+        return res;
     }
 }

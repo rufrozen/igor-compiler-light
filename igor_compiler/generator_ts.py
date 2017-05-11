@@ -35,6 +35,34 @@ function jsonHasValue(json: Object, key: string)
 {
     return key in json && json[key] != null;
 }
+
+function dictClone<T>(data: {[key: string]: T}, copy: (data: T) => T)
+{
+    let res: {[key: string]: T} = {};
+    for (let key in data)
+        res[key] = copy(data[key]);
+    return res
+}
+
+function listClone<T>(data: T[], copy: (data: T) => T)
+{
+    return data.map(copy);
+}
+
+function stringClone(str: string)
+{
+    return (' ' + str).slice(1);
+}
+
+function jsonClone(json: any)
+{
+    return JSON.parse(JSON.stringify(json));
+}
+
+function dateClone(date: Date)
+{
+    return new Date(date.getTime());
+}
 '''
 
 def wrap(text, border="'"):
@@ -116,6 +144,20 @@ class Type:
         elif self.tag == 'Date': return 'Date'
         elif self.is_simple: return self.tag
         else: raise GenerationError('unknown type ' + self.tag)
+
+    def clone(self, var):
+        if self.is_record: return var + ".clone()"
+        elif self.is_list:
+            el = self.param_name
+            return "listClone({var}, {el} => {item})".format(el=el, var=var, item=self.item_type.clone(el))
+        elif self.is_dict:
+            el = self.param_name
+            return "dictClone({var}, {el} => {item})".format(el=el, var=var, item=self.value_type.clone(el))
+        elif self.tag == 'Date': return "dateClone({var})".format(var=var)
+        elif self.tag == 'json': return "jsonClone({var})".format(var=var)
+        elif self.tag == 'string': return "stringClone({var})".format(var=var)
+        else:
+            return var
 
     def from_json(self, json):
         if self.is_record: return "{s.fullref}.fromJson({json})".format(s=self, json=json)
@@ -268,7 +310,7 @@ class Property:
         else:
             return self.vartype.declaration
 
-    @property    
+    @property
     def delcaration(self):
         if self.is_property:
             var = "private {s.private_varname}: {s.vartype_delcaration}; // {s.desc}".format(s=self)
@@ -279,6 +321,16 @@ class Property:
         else:
             res = "{s.varname}: {s.vartype_delcaration}; // {s.desc}".format(s=self)
             return [res]
+        
+    @property
+    def clone_src(self):
+        return self.vartype.clone("this." + self.varname)
+
+    def clone(self):
+        if self.optional:
+            return "res.{s.varname} = this.{s.varname} == null ? null : {s.clone_src};".format(s=self)
+        else:
+            return "res.{s.varname} = {s.clone_src};".format(s=self)
     
     @property
     def json_src(self): return "json['{s.name}']".format(s=self)
@@ -294,10 +346,9 @@ class Property:
     
     def from_json(self):
         if self.optional:
-            return '''obj.{s.varname} = jsonHasValue(json, '{s.name}') ? {s.type_from_json} : null;'''.format(s=self)
+            return "obj.{s.varname} = jsonHasValue(json, '{s.name}') ? {s.type_from_json} : null;".format(s=self)
         else:
-            return '''obj.{s.varname} = {s.type_from_json};'''.format(s=self)           
-
+            return "obj.{s.varname} = {s.type_from_json};".format(s=self)           
         
     def to_json(self):
         if self.optional:
@@ -329,6 +380,10 @@ class Record:
     @property
     def delcaration(self):
         return '\n'.join([spaces(1) + d for p in self.items for d in p.delcaration])
+
+    @property
+    def clone(self):
+        return '\n'.join([spaces(2) + p.clone() for p in self.items]) 
     
     @property
     def from_json(self):
@@ -363,6 +418,13 @@ export class {s.name}
         }};
 {s.property_to_json}
         return obj;
+    }}
+
+    clone(): {s.name}
+    {{
+        let res = new {s.name}();
+{s.clone}
+        return res;
     }}
 }}
 '''.format(s=self)
