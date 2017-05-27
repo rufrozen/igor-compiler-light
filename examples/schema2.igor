@@ -49,6 +49,8 @@ service deleteSecond
     method DELETE;
     url /api/log/delete;
     query string some_q;
+    query Date some_date;
+    query GlobalEnum some_enum;
     
     body record
     {

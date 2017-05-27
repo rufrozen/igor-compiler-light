@@ -5,7 +5,7 @@ from .utils import *
 
 class IgorCompiler:
     def __init__(self):
-        self.version = "0.1.5"
+        self.version = "0.1.6"
         self.data = []
         self.args = None
     

@@ -433,9 +433,11 @@ def url_text(url):
     if url['tag'] == 'url': return wrap(url['url'])
     else: return inflection.camelize(url['param'], False) + ".toString()"
 
-def query_text(q):
-    name = q['name']
-    return wrap(name) + ': ' + inflection.camelize(name, False)
+def query_text(schema):
+    type = Type(schema['type'])
+    name = schema['name']
+    var = inflection.camelize(name, False)
+    return wrap(name) + ': ' + type.to_json(var)
 
 class Service:
     def __init__(self, schema):

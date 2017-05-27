@@ -43,9 +43,9 @@ export abstract class ProtocolService
     }
 
     // 
-    deleteSecond(someQ: string, body: Protocol.DeleteSecondRequestBody): Observable<Protocol.DeleteSecondResponse200>
+    deleteSecond(someQ: string, someDate: Date, someEnum: Protocol.GlobalEnum, body: Protocol.DeleteSecondRequestBody): Observable<Protocol.DeleteSecondResponse200>
     {
-        return this.delete('/api/log/delete', {'some_q': someQ}, body.toJson())
+        return this.delete('/api/log/delete', {'some_q': someQ, 'some_date': Math.ceil(someDate.getTime() / 1000), 'some_enum': Protocol.GlobalEnumToString(someEnum)}, body.toJson())
             .catch(response =>
             {
                 switch(response.status)

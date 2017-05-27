@@ -177,7 +177,7 @@ class ServiceParam():
         }
     
 class ServiceQuery():
-    grammar = selfdesc, "query", attr("type", SimpleType), selfname, ";"
+    grammar = selfdesc, "query", attr("type", [SimpleType, VarType]), selfname, ";"
     def build(self, context):
         return {
             'name': self.name,

@@ -33,7 +33,7 @@ function jsonHasValue(json: Object, key: string)
 
 function dictClone<T>(data: {[key: string]: T}, copy: (data: T) => T)
 {
-    let res: Object = {};
+    let res: {[key: string]: T} = {};
     for (let key in data)
         res[key] = copy(data[key]);
     return res

@@ -546,6 +546,21 @@
                 "type": {
                     "tag": "string"
                 }
+            },
+            {
+                "description": "",
+                "name": "some_date",
+                "type": {
+                    "tag": "Date"
+                }
+            },
+            {
+                "description": "",
+                "name": "some_enum",
+                "type": {
+                    "ref": "GlobalEnum",
+                    "tag": "ref"
+                }
             }
         ],
         "responses": [
