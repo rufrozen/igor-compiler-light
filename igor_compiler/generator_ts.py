@@ -327,10 +327,7 @@ class Property:
         return self.vartype.clone("this." + self.varname)
 
     def clone(self):
-        if self.optional:
-            return "res.{s.varname} = this.{s.varname} == null ? null : {s.clone_src};".format(s=self)
-        else:
-            return "res.{s.varname} = {s.clone_src};".format(s=self)
+        return "res.{s.varname} = this.{s.varname} == null ? null : {s.clone_src};".format(s=self)
     
     @property
     def json_src(self): return "json['{s.name}']".format(s=self)
