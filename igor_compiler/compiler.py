@@ -10,7 +10,7 @@ igor_info = '''// Author: Igor light compiler
 
 class IgorCompiler:
     def __init__(self):
-        self.version = "0.1.7"
+        self.version = "0.1.8"
         self.data = []
         self.args = None
     
