@@ -62,7 +62,7 @@ function dateClone(date: Date)
     return new Date(date.getTime());
 }
 
-function selectOptions(count: number, key: string, value: string, toValue: (data: number) => string)
+function selectOptions(count: number, key: string, value: string, toValue: (data: number) => string) : Array<Object>
 {
     let res = [];
     for (let i = 1; i < count; ++i)
@@ -110,7 +110,7 @@ export function SomeEnumToDescription(val: SomeEnum)
     ];
     return arr[val]
 }
-export function SomeEnumToSelectOptions(key: string, value: string) : Array<{key: string, value: string}>
+export function SomeEnumToSelectOptions(key: string, value: string) : Array<Object>
 {
     return selectOptions(SomeEnum.Count, key, value, SomeEnumToDescription);
 }
@@ -154,7 +154,7 @@ export function GlobalEnumToDescription(val: GlobalEnum)
     ];
     return arr[val]
 }
-export function GlobalEnumToSelectOptions(key: string, value: string) : Array<{key: string, value: string}>
+export function GlobalEnumToSelectOptions(key: string, value: string) : Array<Object>
 {
     return selectOptions(GlobalEnum.Count, key, value, GlobalEnumToDescription);
 }
@@ -194,7 +194,7 @@ export function BigInnerRecordStatusEnumToDescription(val: BigInnerRecordStatusE
     ];
     return arr[val]
 }
-export function BigInnerRecordStatusEnumToSelectOptions(key: string, value: string) : Array<{key: string, value: string}>
+export function BigInnerRecordStatusEnumToSelectOptions(key: string, value: string) : Array<Object>
 {
     return selectOptions(BigInnerRecordStatusEnum.Count, key, value, BigInnerRecordStatusEnumToDescription);
 }
@@ -238,7 +238,7 @@ export function BigInnerRecordCustomEnumToDescription(val: BigInnerRecordCustomE
     ];
     return arr[val]
 }
-export function BigInnerRecordCustomEnumToSelectOptions(key: string, value: string) : Array<{key: string, value: string}>
+export function BigInnerRecordCustomEnumToSelectOptions(key: string, value: string) : Array<Object>
 {
     return selectOptions(BigInnerRecordCustomEnum.Count, key, value, BigInnerRecordCustomEnumToDescription);
 }
@@ -282,7 +282,7 @@ export function DeleteSecondRequestBodyItemEnumToDescription(val: DeleteSecondRe
     ];
     return arr[val]
 }
-export function DeleteSecondRequestBodyItemEnumToSelectOptions(key: string, value: string) : Array<{key: string, value: string}>
+export function DeleteSecondRequestBodyItemEnumToSelectOptions(key: string, value: string) : Array<Object>
 {
     return selectOptions(DeleteSecondRequestBodyItemEnum.Count, key, value, DeleteSecondRequestBodyItemEnumToDescription);
 }

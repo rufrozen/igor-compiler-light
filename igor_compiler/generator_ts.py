@@ -64,7 +64,7 @@ function dateClone(date: Date)
     return new Date(date.getTime());
 }
 
-function selectOptions(count: number, key: string, value: string, toValue: (data: number) => string)
+function selectOptions(count: number, key: string, value: string, toValue: (data: number) => string) : Array<Object>
 {
     let res = [];
     for (let i = 1; i < count; ++i)
@@ -284,7 +284,7 @@ export function {s.name}ToDescription(val: {s.name})
     ];
     return arr[val]
 }}
-export function {s.name}ToSelectOptions(key: string, value: string) : Array<{{key: string, value: string}}>
+export function {s.name}ToSelectOptions(key: string, value: string) : Array<Object>
 {{
     return selectOptions({s.name}.Count, key, value, {s.name}ToDescription);
 }}
