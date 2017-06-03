@@ -64,11 +64,16 @@ function dateClone(date: Date)
     return new Date(date.getTime());
 }
 
-function selectOptions(count: number, key: string, toKey: (data: number) => string, value: string, toValue: (data: number) => string)
+function selectOptions(count: number, key: string, value: string, toValue: (data: number) => string)
 {
     let res = [];
     for (let i = 1; i < count; ++i)
-        res.push({key: toKey(i), value: toValue(i)});
+    {
+        let obj = {};
+        obj[key] = i;
+        obj[value] = toValue(i);
+        res.push(obj);
+    }
     return res;
 }
 '''
@@ -281,7 +286,7 @@ export function {s.name}ToDescription(val: {s.name})
 }}
 export function {s.name}ToSelectOptions(key: string, value: string) : Array<{{key: string, value: string}}>
 {{
-    return selectOptions({s.name}.Count, key, {s.name}ToString, value, {s.name}ToDescription);
+    return selectOptions({s.name}.Count, key, value, {s.name}ToDescription);
 }}
 '''.format(s=self)
 
