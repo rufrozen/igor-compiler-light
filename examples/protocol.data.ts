@@ -287,6 +287,46 @@ export function DeleteSecondRequestBodyItemEnumToSelectOptions(key: string, valu
     return selectOptions(DeleteSecondRequestBodyItemEnum.Count, key, value, DeleteSecondRequestBodyItemEnumToDescription);
 }
 
+// 
+export const enum NotifyEnum
+{
+    Null,
+    Data1, // 
+    Data2, // 
+    Count
+}
+export function NotifyEnumToString(val: NotifyEnum)
+{
+    let arr = [
+        null,
+        'data1',
+        'data2'
+    ];
+    return arr[val]
+}
+export function NotifyEnumFromString(json: string)
+{
+    switch(json)
+    {
+        case 'data1': return NotifyEnum.Data1;
+        case 'data2': return NotifyEnum.Data2;
+        default: return NotifyEnum.Null;
+    }
+}
+export function NotifyEnumToDescription(val: NotifyEnum)
+{
+    let arr = [
+        null,
+        '',
+        ''
+    ];
+    return arr[val]
+}
+export function NotifyEnumToSelectOptions(key: string, value: string) : Array<Object>
+{
+    return selectOptions(NotifyEnum.Count, key, value, NotifyEnumToDescription);
+}
+
 export class RecordEmpty
 {
 
@@ -602,6 +642,86 @@ export class DeleteSecondResponse200
     {
         let res = new DeleteSecondResponse200();
         res.error = this.error == null ? null : stringClone(this.error);
+        return res;
+    }
+}
+
+export class NotifyRecord
+{
+    private _str: string; // 
+    private _has_str: boolean = false;
+    get str() : string { return this._str; }
+    set str(val : string) { this._str = val; this._has_str = true; }
+    optInt: number | null; // 
+    list: Array<string>; // 
+    myEnum: NotifyEnum | null; // 
+    value: boolean; // 
+    
+    static fromJson(json: Object): NotifyRecord
+    {
+        let obj = new NotifyRecord();
+        obj.str = <string>json['str'];
+        obj.optInt = jsonHasValue(json, 'opt_int') ? <number>json['opt_int'] : null;
+        obj.list = listFromJson(json['list'], el1 => <string>el1);
+        obj.myEnum = jsonHasValue(json, 'my_enum') ? NotifyEnumFromString(json['my_enum']) : null;
+        obj.value = <boolean>json['value'];
+        return obj;
+    }
+
+    toJson(): Object
+    {
+        let obj: Object =
+        {
+            'opt_int': this.optInt == null ? null : this.optInt,
+            'list': listToJson(this.list, el1 => el1),
+            'my_enum': this.myEnum == null ? null : NotifyEnumToString(this.myEnum),
+            'value': this.value,
+        };
+        if (this._has_str) obj['str'] = this.str;
+        return obj;
+    }
+
+    clone(): NotifyRecord
+    {
+        let res = new NotifyRecord();
+        res.str = this.str == null ? null : stringClone(this.str);
+        res.optInt = this.optInt == null ? null : this.optInt;
+        res.list = this.list == null ? null : listClone(this.list, el1 => stringClone(el1));
+        res.myEnum = this.myEnum == null ? null : this.myEnum;
+        res.value = this.value == null ? null : this.value;
+        return res;
+    }
+}
+
+export class NotifyData2
+{
+    id: number; // 
+    data: NotifyRecord; // 
+    
+    static fromJson(json: Object): NotifyData2
+    {
+        let obj = new NotifyData2();
+        obj.id = <number>json['id'];
+        obj.data = NotifyRecord.fromJson(json['data']);
+        return obj;
+    }
+
+    toJson(): Object
+    {
+        let obj: Object =
+        {
+            'id': this.id,
+            'data': this.data.toJson(),
+        };
+
+        return obj;
+    }
+
+    clone(): NotifyData2
+    {
+        let res = new NotifyData2();
+        res.id = this.id == null ? null : this.id;
+        res.data = this.data == null ? null : this.data.clone();
         return res;
     }
 }

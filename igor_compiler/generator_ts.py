@@ -551,28 +551,101 @@ class Service:
     }}
 '''.format(s=self)
 
-def print_declarations(name, data):
-    print(name + ': \n  ' + '\n  '.join([a.name for a in data]))
-
-class IgorGeneratorTs:
+class Notification:
     def __init__(self, schema):
         self.schema = schema
-        self.services = [Service(a) for a in schema if a['tag'] == 'service']
-        self.records = [Record(a) for a in schema if a['tag'] == 'record']
-        self.enums = [Enum(a) for a in schema if a['tag'] == 'enum']
-        print_declarations('Enums', self.enums)
-        print_declarations('Records', self.records)
-        print_declarations('Services', self.services)
+    
+    @property
+    def name(self): return inflection.camelize(self.schema['name']) + 'Notification'
+    @property
+    def varname(self): return inflection.camelize(self.schema['name'], False)
+    @property
+    def kind(self): return self.schema['kind'] if self.schema['kind'] != None else inflection.underscore(self.schema['name'])
+    @property
+    def has_payload(self): return self.schema['payload'] != None
+    def payload_type(self): return Type(self.schema['payload'])
+    def payload_declaration(self): return self.payload_type().declaration if self.has_payload else 'any';
+    def payload_from_json(self): return self.payload_type().from_json("json['payload']") if self.has_payload else 'null';
 
+    def generate(self):
+        return '''
+export class {s.name} extends ProtocolNotification
+{{
+    payload: {payload_declaration};
+    
+    constructor(json: Object)
+    {{
+        super(json['kind']);
+        this.payload = {payload_from_json};
+    }}
+}}
+'''.format(s=self, payload_declaration=self.payload_declaration(), payload_from_json=self.payload_from_json())
+
+    def generate_declare(self):
+        return '{s.varname} = new Subject<{s.name}>();'.format(s=self)
+
+    def generate_match(self):
+        return "case '{s.kind}': this.{s.varname}.next(new {s.name}(message)); break;".format(s=self)
+
+class FileNotification:
+    def __init__(self, data):
+        self.data = data
+
+    @property
+    def classes(self):
+        return ''.join([a.generate() for a in self.data])
+    
+    @property
+    def declare(self):
+        return '\n'.join([spaces(1) + a.generate_declare() for a in self.data])
+    
+    @property
+    def match(self):
+        return '\n'.join([spaces(3) + a.generate_match() for a in self.data])
+    
+    def generate(self):
+        global global_prefix
+        global_prefix = 'Protocol.'
+        return '''
+import {{Subject}} from "rxjs/Rx";
+import * as Protocol from "./protocol.data"
+
+export class ProtocolNotification
+{{
+    constructor(public kind: string) {{ }}
+}}
+{s.classes}
+
+export abstract class ProtocolNotificationService
+{{
+{s.declare}
+
+    constructor() {{ }}
+
+    push(message: Object)
+    {{
+        switch (message['kind'])
+        {{
+{s.match}
+            default: this.unknown(message); break;
+        }}
+    }}
+
+    unknown(message: Object)
+    {{
+        console.log('Unknown notification', message);
+    }}
+}}
+'''.format(s=self)
+
+class FileService:
+    def __init__(self, services):
+        self.services = services
+        
     def requests(self):
         return ''.join([a.generate() for a in self.services])
     
-    def generate_data(self):
-        global global_prefix
-        global_prefix = ''
-        return header + ''.join([a.generate() for a in self.enums]) + ''.join([a.generate() for a in self.records])
-
-    def generate_service(self):
+    def generate(self):
         global global_prefix
         global_prefix = 'Protocol.'
         return '''
@@ -591,3 +664,29 @@ export abstract class ProtocolService
 %requests%
 }
 '''.replace('%requests%', self.requests())
+
+def print_declarations(name, data):
+    print(name + ': \n  ' + '\n  '.join([a.name for a in data]))
+
+class IgorGeneratorTs:
+    def __init__(self, schema):
+        self.schema = schema
+        self.services = [Service(a) for a in schema if a['tag'] == 'service']
+        self.notifications = [Notification(a) for a in schema if a['tag'] == 'notification']
+        self.records = [Record(a) for a in schema if a['tag'] == 'record']
+        self.enums = [Enum(a) for a in schema if a['tag'] == 'enum']
+        print_declarations('Enums', self.enums)
+        print_declarations('Records', self.records)
+        print_declarations('Services', self.services)
+        print_declarations('Notifications', self.notifications)
+    
+    def generate_data(self):
+        global global_prefix
+        global_prefix = ''
+        return header + ''.join([a.generate() for a in self.enums]) + ''.join([a.generate() for a in self.records])
+
+    def generate_service(self):
+        return FileService(self.services).generate();
+    
+    def generate_notification(self):
+        return FileNotification(self.notifications).generate();

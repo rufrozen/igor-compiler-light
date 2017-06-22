@@ -257,10 +257,42 @@ class Service(List):
             'responses': self.filter_build(context, ServiceResponse),
         })
         context.service_name = None
-        
+
+class NotificationKind():
+    grammar = "kind", selfname, ';'
+    def build(self, context):
+        return self.name;    
+
+class NotificationPayload():
+    grammar = "payload", attr("data", [ServiceRecordInline, ServiceInline])
+    def build(self, context):
+        context.record_name = [context.service_name]
+        res = self.data.build(context);
+        context.record_name = []
+        return res
+
+class Notification(List):
+    grammar = selfdesc, "notification", selfname, "{",  maybe_some([NotificationKind, NotificationPayload]), "}"
+
+    def filter_one_build(self, context, childType):
+        for a in self:
+            if type(a) is childType:
+                return a.build(context)
+        return None
+    
+    def collect(self, context):
+        context.service_name = self.name
+        context.add({
+            'tag': 'notification',
+            'description': getdesc(self.desc),
+            'name': self.name,
+            'kind': self.filter_one_build(context, NotificationKind),
+            'payload': self.filter_one_build(context, NotificationPayload),
+        })
+        context.service_name = None
 
 class Definition():
-    grammar = attr("value", [Enum, Record, Service])
+    grammar = attr("value", [Enum, Record, Service, Notification])
     def collect(self, context):
         self.value.collect(context)
     

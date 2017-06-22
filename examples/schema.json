@@ -596,5 +596,140 @@
                 "url": "/api/log/delete"
             }
         ]
+    },
+    {
+        "description": "",
+        "items": [
+            {
+                "description": "",
+                "name": "data1",
+                "ref": null
+            },
+            {
+                "description": "",
+                "name": "data2",
+                "ref": null
+            }
+        ],
+        "name": "NotifyEnum",
+        "tag": "enum"
+    },
+    {
+        "description": "",
+        "items": [
+            {
+                "description": "",
+                "name": "str",
+                "optional": false,
+                "property": true,
+                "type": {
+                    "tag": "string"
+                }
+            },
+            {
+                "description": "",
+                "name": "opt_int",
+                "optional": true,
+                "property": false,
+                "type": {
+                    "tag": "int"
+                }
+            },
+            {
+                "description": "",
+                "name": "list",
+                "optional": false,
+                "property": false,
+                "type": {
+                    "item_type": {
+                        "tag": "string"
+                    },
+                    "tag": "list"
+                }
+            },
+            {
+                "description": "",
+                "name": "my_enum",
+                "optional": true,
+                "property": false,
+                "type": {
+                    "ref": "NotifyEnum",
+                    "tag": "ref"
+                }
+            },
+            {
+                "description": "",
+                "name": "value",
+                "optional": false,
+                "property": false,
+                "type": {
+                    "tag": "bool"
+                }
+            }
+        ],
+        "name": "NotifyRecord",
+        "tag": "record"
+    },
+    {
+        "description": "",
+        "kind": "diffrent_kind",
+        "name": "NotifyData1",
+        "payload": {
+            "ref": "NotifyRecord",
+            "tag": "ref"
+        },
+        "tag": "notification"
+    },
+    {
+        "description": "",
+        "items": [
+            {
+                "description": "",
+                "name": "id",
+                "optional": false,
+                "property": false,
+                "type": {
+                    "tag": "int"
+                }
+            },
+            {
+                "description": "",
+                "name": "data",
+                "optional": false,
+                "property": false,
+                "type": {
+                    "ref": "NotifyRecord",
+                    "tag": "ref"
+                }
+            }
+        ],
+        "name": "NotifyData2",
+        "tag": "record"
+    },
+    {
+        "description": "",
+        "kind": null,
+        "name": "NotifyData2",
+        "payload": {
+            "ref": "NotifyData2",
+            "tag": "ref"
+        },
+        "tag": "notification"
+    },
+    {
+        "description": "",
+        "kind": null,
+        "name": "NotifyData3",
+        "payload": {
+            "tag": "int"
+        },
+        "tag": "notification"
+    },
+    {
+        "description": "",
+        "kind": null,
+        "name": "NotifyEmpty",
+        "payload": null,
+        "tag": "notification"
     }
 ]

@@ -1,0 +1,39 @@
+
+enum NotifyEnum
+{
+    data1;
+    data2;
+}
+
+record NotifyRecord
+{
+    @string str;
+    ?int opt_int;
+    list<string> list;
+    ?NotifyEnum my_enum;
+    bool value;
+}
+
+notification NotifyData1
+{
+    kind diffrent_kind;
+    payload NotifyRecord;
+}
+
+notification NotifyData2
+{
+    payload record 
+    {
+        int id;
+        NotifyRecord  data; 
+    }
+}
+
+notification NotifyData3
+{
+    payload int;
+}
+
+notification NotifyEmpty
+{
+}

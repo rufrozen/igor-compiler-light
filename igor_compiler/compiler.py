@@ -10,7 +10,7 @@ igor_info = '''// Author: Igor light compiler
 
 class IgorCompiler:
     def __init__(self):
-        self.version = "0.1.9"
+        self.version = "0.2.0"
         self.data = []
         self.args = None
     
@@ -66,7 +66,9 @@ class IgorCompiler:
         target_dir = self.args.typescript
         target_data_path = 'protocol.data.ts'
         target_service_path = 'protocol.service.ts'
+        target_notification_path = 'protocol.notification.ts'
         ts = IgorGeneratorTs(self.data)
         prefix = igor_info.format(version=self.version);
         write_file(os.path.join(target_dir, target_data_path), prefix + ts.generate_data())
         write_file(os.path.join(target_dir, target_service_path), prefix + ts.generate_service())
+        write_file(os.path.join(target_dir, target_notification_path), prefix + ts.generate_notification())
