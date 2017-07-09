@@ -409,7 +409,7 @@ class Record:
     
     @property
     def from_json(self):
-        return '\n'.join([spaces(2) + p.from_json() for p in self.items])
+        return '\n'.join([spaces(2) + p.from_json() for p in self.items if not p.is_property])
     
     @property
     def to_json(self):

@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='IgorCompiller',
-    version='0.2.1',
+    version='0.2.2',
     description='Script language for describing REST protocol. Include Typescript code generator for client and Document generator. ',
     author='Igor Timurov',
     author_email='rufrozen@yandex.ru',
