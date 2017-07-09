@@ -371,6 +371,13 @@ class Property:
         else:
             return "'{s.name}': {s.type_to_json},".format(s=self)
 
+    def property_from_json(self):
+        prefix = "if ('{s.name}' in json) ".format(s=self) 
+        if self.optional:
+            return prefix + "obj.{s.varname} = json['{s.name}'] != null ? {s.type_from_json} : null;".format(s=self)
+        else:
+            return prefix + "obj.{s.varname} = {s.type_from_json};".format(s=self)      
+
     def property_to_json(self):
         prefix = "if (this.{s.has_varname}) obj['{s.name}'] = "
         if self.optional:
@@ -409,6 +416,10 @@ class Record:
         return '\n'.join([spaces(3) + p.to_json() for p in self.items if not p.is_property])
     
     @property
+    def property_from_json(self):
+        return '\n'.join([spaces(2) + p.property_from_json() for p in self.items if p.is_property])
+    
+    @property
     def property_to_json(self):
         return '\n'.join([spaces(2) + p.property_to_json() for p in self.items if p.is_property])
     
@@ -422,6 +433,7 @@ export class {s.name}
     {{
         let obj = new {s.name}();
 {s.from_json}
+{s.property_from_json}
         return obj;
     }}
 
@@ -633,7 +645,7 @@ export abstract class ProtocolNotificationService
 
     unknown(message: Object)
     {{
-        console.log('Unknown notification', message);
+        console.log('Unknown notification', JSON.stringify(message));
     }}
 }}
 '''.format(s=self)
